@@ -13,7 +13,6 @@ export class AuthController {
   @UseGuards(KakaoAuthGuard)
   @Get('kakao/callback')
   async callback(@Req() req): Promise<any> {
-    console.log(req.user);
     return req.user;
   }
 }
