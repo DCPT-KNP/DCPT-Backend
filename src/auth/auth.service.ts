@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
+import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from 'src/common/config';
 
 @Injectable()
 export class AuthService {
@@ -46,6 +47,31 @@ export class AuthService {
         { withCredentials: true },
         { headers: _header },
       );
+
+      return {
+        success: 1,
+        result: result.data,
+      };
+    } catch (e) {
+      return {
+        success: 0,
+        error: e,
+      };
+    }
+  }
+
+  async naverLogout(): Promise<any> {
+    const _url =
+      this.host.naver +
+      `/oauth2.0/token?` +
+      `grant_type=delete&` +
+      `client_id=${NAVER_CLIENT_ID}&` +
+      `client_secret=${NAVER_CLIENT_SECRET}&` +
+      `access_token=${this.accessToken}&` +
+      `service_provider=NAVER`;
+
+    try {
+      const result = await axios.post(_url);
 
       return {
         success: 1,

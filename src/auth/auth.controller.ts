@@ -1,6 +1,7 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { KakaoAuthGuard } from './guards/kakao-auth.guard';
+import { NaverAuthGuard } from './guards/naver-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -17,7 +18,7 @@ export class AuthController {
 
   @UseGuards(KakaoAuthGuard)
   @Get('kakao/callback')
-  async callback(@Req() req): Promise<any> {
+  async kakaoCallback(@Req() req): Promise<any> {
     this.authService.setAccessToken(req.user.accessToken);
     return req.user;
   }
@@ -35,6 +36,24 @@ export class AuthController {
   /**
    * naver strategy
    */
+
+  @UseGuards(NaverAuthGuard)
+  @Get('naver')
+  async naverLogin() {
+    return;
+  }
+
+  @UseGuards(NaverAuthGuard)
+  @Get('naver/callback')
+  async naverCallback(@Req() req): Promise<any> {
+    this.authService.setAccessToken(req.user.accessToken);
+    return req.user;
+  }
+
+  @Get('naver/logout')
+  async naverLogout(): Promise<any> {
+    return await this.authService.naverLogout();
+  }
 
   /**
    * google strategy
