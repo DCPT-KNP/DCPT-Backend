@@ -1,33 +1,29 @@
 import { Strategy } from 'passport-kakao';
-import { Injectable } from "@nestjs/common";
-import { PassportStrategy } from "@nestjs/passport";
+import { Injectable } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
 import { KAKAO_CLIENT_ID } from 'src/common/config';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
-  constructor(
+  constructor() {
     // private readonly authService
-  ) {
     super({
       clientID: KAKAO_CLIENT_ID,
-      callbackURL: "/api/auth/kakao/callback"
+      callbackURL: '/api/auth/kakao/callback',
     });
   }
 
-  async validate(accessToken: string, refreshToken: string, profile: any, done: any): Promise<any> {
-
-    console.log(1);
-
-    console.log(accessToken);
-    console.log(refreshToken);
-    console.log(profile);
-    console.log(done);
-
+  async validate(
+    accessToken: string,
+    refreshToken: string,
+    profile: any,
+    done: any,
+  ): Promise<any> {
     return {
       accessToken,
       refreshToken,
       profile,
-      done
+      done,
     };
 
     // const user_profile = {

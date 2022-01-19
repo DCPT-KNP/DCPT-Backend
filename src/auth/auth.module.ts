@@ -5,6 +5,6 @@ import { KakaoStrategy } from './strategies/kakao.strategy';
 
 @Module({
   providers: [AuthService, KakaoStrategy],
-  controllers: [AuthController]
+  controllers: [AuthController],
 })
 export class AuthModule {}

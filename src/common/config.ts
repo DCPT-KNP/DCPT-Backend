@@ -1,4 +1,3 @@
-
 import * as dotenv from 'dotenv';
 
 const envFound = dotenv.config({

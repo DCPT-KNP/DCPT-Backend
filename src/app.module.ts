@@ -6,9 +6,7 @@ import { AuthModule } from './auth/auth.module';
   imports: [AuthModule],
 })
 export class AppModule {
-
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
   }
-
 }
