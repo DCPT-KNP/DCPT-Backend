@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { PORT } from './common/config';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,6 +20,9 @@ async function bootstrap() {
 
   // custom filter
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  // middleware
+  app.use(cookieParser());
 
   await app.listen(PORT);
 

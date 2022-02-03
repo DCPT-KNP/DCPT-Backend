@@ -23,11 +23,15 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     profile: any,
     done: any,
   ): Promise<any> {
+    const { email, id } = profile._json;
+
+    // TODO: 필수 제공 항목엔 이름이 포함되어 있는데 왜 닉네임만 실려오지?
+
     return {
       accessToken,
       refreshToken,
-      profile,
-      done,
+      email,
+      id
     };
   }
 }

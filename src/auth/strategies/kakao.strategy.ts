@@ -19,11 +19,16 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     profile: any,
     done: any,
   ): Promise<any> {
+    const info = profile._json.kakao_account;
+
+    const { nickname } = info.profile;
+    const { email } = info;
+
     return {
       accessToken,
       refreshToken,
-      profile,
-      done,
+      nickname,
+      email,
     };
 
     // const user_profile = {

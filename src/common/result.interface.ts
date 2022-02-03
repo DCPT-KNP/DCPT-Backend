@@ -1,5 +1,6 @@
 export interface Result {
-  code: number;
+  success: boolean;
   message: string;
-  data?: any;
+  response: any;
+  error?: any;
 }
