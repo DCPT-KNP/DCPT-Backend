@@ -7,6 +7,7 @@ import {
 } from 'src/common/config';
 import { Result } from 'src/common/result.interface';
 import { AuthService } from './auth.service';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { KakaoAuthGuard } from './guards/kakao-auth.guard';
 import { NaverAuthGuard } from './guards/naver-auth.guard';
 
@@ -90,7 +91,10 @@ export class AuthController {
 
   @UseGuards(NaverAuthGuard)
   @Get('naver/callback')
-  async naverCallback(@Req() req, @Res() res: Response): Promise<any> {
+  async naverCallback(
+    @Req() req,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<any> {
     const { accessToken, refreshToken, email, id } = req.user;
 
     this.authService.setAccessToken(accessToken);
@@ -110,8 +114,6 @@ export class AuthController {
         email,
       },
     };
-
-    return req.user;
   }
 
   @Get('naver/logout')
@@ -122,4 +124,28 @@ export class AuthController {
   /**
    * google strategy
    */
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google')
+  async googleLogin() {
+    return;
+  }
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/callback')
+  async googleCallback(@Req() req): Promise<any> {
+    const { accessToken, email, name } = req.user;
+
+    this.authService.setAccessToken(accessToken);
+
+    return {
+      success: true,
+      message: '구글 로그인 성공',
+      response: {
+        accessToken,
+        name,
+        email,
+      },
+    };
+  }
 }

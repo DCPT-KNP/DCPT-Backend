@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-naver';
+import { Strategy, VerifyCallback } from 'passport-naver';
 import {
   NAVER_CALLBACK,
   NAVER_CLIENT_ID,
@@ -21,17 +21,19 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     accessToken: string,
     refreshToken: string,
     profile: any,
-    done: any,
+    done: VerifyCallback,
   ): Promise<any> {
     const { email, id } = profile._json;
 
     // TODO: 필수 제공 항목엔 이름이 포함되어 있는데 왜 닉네임만 실려오지?
 
-    return {
+    const user = {
       accessToken,
       refreshToken,
       email,
-      id
+      id,
     };
+
+    done(null, user);
   }
 }
