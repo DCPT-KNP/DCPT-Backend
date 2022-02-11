@@ -9,6 +9,11 @@ export class CareerModel {
   @Column()
   type: string;
 
+  @Column({
+    default: 'My Roadmap',
+  })
+  title: string;
+
   @Column()
   primaryTag: string;
 

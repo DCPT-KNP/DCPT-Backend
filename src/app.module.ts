@@ -3,6 +3,7 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DB_DATABASE, DB_PASSWORD, DB_USERNAME } from './common/config';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { DB_DATABASE, DB_PASSWORD, DB_USERNAME } from './common/config';
       synchronize: true,
     }),
     AuthModule,
+    UserModule,
   ],
 })
 export class AppModule {

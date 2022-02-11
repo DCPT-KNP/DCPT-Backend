@@ -5,30 +5,30 @@ import {
   JoinColumn,
   OneToMany,
   OneToOne,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { CareerModel } from './career-model.entity';
+import { JobGroup } from './job_group.entity';
 import { OtherCategory } from './other-category.entity';
 import { SkillCard } from './skill-card.entity';
 import { SNSInfo } from './sns-info.entity';
 
 @Entity({ name: 'users' })
 export class User {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: string;
-
-  @Column()
-  username: string;
-
-  @Column()
-  password: string;
 
   @Column()
   email: string;
 
   @Column()
   nickname: string;
+
+  @Column({
+    nullable: true,
+  })
+  careerYear: string;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -44,7 +44,6 @@ export class User {
   modifiedDate: Date;
 
   @OneToOne(() => SNSInfo)
-  @JoinColumn({ name: 'sns_info_id' })
   snsInfo: SNSInfo;
 
   @OneToOne(() => CareerModel)
@@ -58,4 +57,18 @@ export class User {
   // one2many : user, othercategory
   @OneToMany(() => OtherCategory, (otherCategory) => otherCategory.user)
   otherCategories: OtherCategory[];
+
+  // one2many: user, jobgroup
+  @OneToMany(() => JobGroup, (jobGroup) => jobGroup.user)
+  jobGroups: JobGroup[];
+
+  constructor(email: string, nickname: string, careerYear: string | null) {
+    this.email = email;
+    this.nickname = nickname;
+    this.careerYear = careerYear;
+  }
+
+  static fromJson(json) {
+    return new User(json.email, json.nickname, json.careerYear);
+  }
 }
