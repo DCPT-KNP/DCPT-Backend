@@ -6,10 +6,12 @@ import {
   GOOGLE_CLIENT_ID,
   GOOGLE_SECRET,
 } from 'src/common/config';
+import { checkUser } from 'src/common/utils';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor() {
+  constructor(private readonly _userService: UserService) {
     super({
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_SECRET,
@@ -24,12 +26,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: any,
     done: VerifyCallback,
   ) {
+    const { id } = profile;
     const { email, name } = profile._json;
 
+    checkUser(id, email, name, 'google', this._userService, done);
+
     const user = {
-      accessToken,
       email,
-      name,
+      nickname: name,
     };
 
     done(null, user);

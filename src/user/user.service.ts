@@ -120,14 +120,10 @@ export class UserService {
     await queryRunner.startTransaction();
 
     try {
-      const newUser: User = User.fromJson({
-        ...userData,
-      });
+      const newUser: User = User.fromJson({ ...userData });
       await queryRunner.manager.save(User, newUser);
 
-      const newSNSInfo: SNSInfo = SNSInfo.fromJson({
-        ...snsInfoData,
-      });
+      const newSNSInfo: SNSInfo = SNSInfo.fromJson({ ...snsInfoData });
       newSNSInfo.user = newUser;
       await queryRunner.manager.save(SNSInfo, newSNSInfo);
 

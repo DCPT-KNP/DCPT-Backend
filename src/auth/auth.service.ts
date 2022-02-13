@@ -1,25 +1,63 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
 import {
+  AES_KEY,
+  JWT_SECRET,
   KAKAO_API_HOST,
   NAVER_CLIENT_ID,
   NAVER_CLIENT_SECRET,
   NAVER_HOST,
 } from 'src/common/config';
 import { Result } from 'src/common/result.interface';
+import * as CryptoJS from 'crypto-js';
 
 @Injectable()
 export class AuthService {
-  private accessToken = '';
+  constructor(private readonly jwtService: JwtService) {}
 
-  setAccessToken(token: string) {
-    this.accessToken = token;
+  async validateToken(token: string) {
+    return await this.jwtService.verify(token, {
+      secret: JWT_SECRET,
+    });
   }
 
-  async kakaoLogout(): Promise<Result> {
+  async createAccessToken(email, nickname) {
+    const payload = {
+      type: 'accessToken',
+      email: email,
+      nickname: nickname,
+    };
+    const accessToken = this.jwtService.sign(payload, {
+      secret: JWT_SECRET,
+      expiresIn: '1h',
+    });
+    return accessToken;
+  }
+
+  async createRefreshToken(email, nickname) {
+    const payload = {
+      type: 'refreshToken',
+      email: email,
+      nickname: nickname,
+    };
+    const token = this.jwtService.sign(payload, {
+      secret: JWT_SECRET,
+      expiresIn: '2w',
+    });
+
+    const refreshToken = CryptoJS.AES.encrypt(
+      JSON.stringify(token),
+      AES_KEY,
+    ).toString();
+
+    return refreshToken;
+  }
+
+  async kakaoLogout(accessToken: string): Promise<Result> {
     const _url = KAKAO_API_HOST + '/v1/user/logout';
     const _header = {
-      Authorization: `Bearer ${this.accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     };
 
     try {
@@ -44,10 +82,10 @@ export class AuthService {
     }
   }
 
-  async kakaoUnlink(): Promise<Result> {
+  async kakaoUnlink(accessToken: string): Promise<Result> {
     const _url = KAKAO_API_HOST + '/v1/user/unlink';
     const _header = {
-      Authorization: `Bearer ${this.accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     };
 
     try {
@@ -72,14 +110,14 @@ export class AuthService {
     }
   }
 
-  async naverLogout(): Promise<Result> {
+  async naverLogout(accessToken: string): Promise<Result> {
     const _url =
       NAVER_HOST +
       `/oauth2.0/token?` +
       `grant_type=delete&` +
       `client_id=${NAVER_CLIENT_ID}&` +
       `client_secret=${NAVER_CLIENT_SECRET}&` +
-      `access_token=${this.accessToken}&` +
+      `access_token=${accessToken}&` +
       `service_provider=NAVER`;
 
     try {

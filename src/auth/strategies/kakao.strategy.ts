@@ -3,8 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { KAKAO_CALLBACK, KAKAO_CLIENT_ID } from 'src/common/config';
 import { UserService } from 'src/user/user.service';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { CreateSNSInfoDto } from 'src/user/dto/create-sns-info.dto';
+import { checkUser } from 'src/common/utils';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
@@ -27,32 +26,9 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     const { nickname } = info.profile;
     const { email } = info;
 
-    const findUser = await this._userService.findOneSNSInfo(id, 'kakao');
-
-    if (findUser.success && findUser.response == null) {
-      const newUser: CreateUserDto = {
-        email: email,
-        nickname: nickname,
-        careerYear: null,
-      };
-      const newSNSInfo: CreateSNSInfoDto = {
-        snsId: id,
-        snsType: 'kakao',
-        snsName: nickname,
-      };
-      const result = await this._userService.create(newUser, newSNSInfo);
-
-      if (!result.success) {
-        done(null, false, {
-          message: result.message,
-          error: result.error,
-        });
-      }
-    }
+    checkUser(id, email, nickname, 'kakao', this._userService, done);
 
     const user = {
-      accessToken,
-      refreshToken,
       nickname,
       email,
     };

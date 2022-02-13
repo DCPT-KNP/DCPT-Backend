@@ -1,9 +1,9 @@
-import { Column, Entity, OneToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity({ name: 'career_models' })
 export class CareerModel {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column()
@@ -17,9 +17,33 @@ export class CareerModel {
   @Column()
   primaryTag: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   secondaryTag: string;
 
   @OneToOne(() => User)
   user: User;
+
+  constructor(
+    type: string,
+    primaryTag: string,
+    user: User,
+    secondaryTag?: string,
+  ) {
+    this.type = type;
+    this.title = 'My Roadmap';
+    this.primaryTag = primaryTag;
+    this.secondaryTag = secondaryTag;
+    this.user = user;
+  }
+
+  static fromJson(json) {
+    return new CareerModel(
+      json.type,
+      json.primaryTag,
+      json.user,
+      json.secondaryTag,
+    );
+  }
 }

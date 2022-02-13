@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { CareerModel } from './career-model.entity';
-import { JobGroup } from './job_group.entity';
+import { JobGroup } from './job-group.entity';
 import { OtherCategory } from './other-category.entity';
 import { SkillCard } from './skill-card.entity';
 import { SNSInfo } from './sns-info.entity';
@@ -70,5 +70,9 @@ export class User {
 
   static fromJson(json) {
     return new User(json.email, json.nickname, json.careerYear);
+  }
+
+  addCareerModel(data) {
+    this.careerModel = data;
   }
 }

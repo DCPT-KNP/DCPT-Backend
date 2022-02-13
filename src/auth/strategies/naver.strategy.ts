@@ -6,10 +6,12 @@ import {
   NAVER_CLIENT_ID,
   NAVER_CLIENT_SECRET,
 } from 'src/common/config';
+import { checkUser } from 'src/common/utils';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
-  constructor() {
+  constructor(private readonly _userService: UserService) {
     super({
       clientID: NAVER_CLIENT_ID,
       clientSecret: NAVER_CLIENT_SECRET,
@@ -23,15 +25,14 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     profile: any,
     done: VerifyCallback,
   ): Promise<any> {
-    const { email, id } = profile._json;
+    const { email, nickname, id } = profile._json;
 
-    // TODO: 필수 제공 항목엔 이름이 포함되어 있는데 왜 닉네임만 실려오지?
+    checkUser(id, email, nickname, 'naver', this._userService, done);
 
     const user = {
-      accessToken,
-      refreshToken,
       email,
       id,
+      nickname,
     };
 
     done(null, user);

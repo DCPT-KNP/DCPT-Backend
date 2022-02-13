@@ -10,6 +10,9 @@ if (envFound.error) {
 
 export const PORT = parseInt(process.env.PORT) || 5000;
 
+export const JWT_SECRET = process.env.JWT_SECRET;
+export const AES_KEY = process.env.AES_KEY;
+
 export const KAKAO_CLIENT_ID = process.env.KAKAO_CLIENT_ID;
 export const KAKAO_CALLBACK = process.env.KAKAO_CALLBACK;
 export const LOGOUT_REDIRECT_URI = process.env.LOGOUT_REDIRECT_URI;

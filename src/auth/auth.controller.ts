@@ -1,10 +1,5 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
-import {
-  KAKAO_AUTH_HOST,
-  KAKAO_CLIENT_ID,
-  LOGOUT_REDIRECT_URI,
-} from 'src/common/config';
 import { Result } from 'src/common/result.interface';
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
@@ -40,12 +35,19 @@ export class AuthController {
     @Req() req,
     @Res({ passthrough: true }) res: Response,
   ): Promise<Result> {
-    const { accessToken, refreshToken, nickname, email } = req.user;
+    const { nickname, email } = req.user;
 
-    this.authService.setAccessToken(accessToken);
+    const accessToken = await this.authService.createAccessToken(
+      email,
+      nickname,
+    );
+    const refreshToken = await this.authService.createRefreshToken(
+      email,
+      nickname,
+    );
 
     res.cookie('resfreshToken', refreshToken, {
-      maxAge: 1000 * 60 * 60 * 24 * 30 * 2,
+      maxAge: 1000 * 60 * 60 * 24 * 14,
       sameSite: 'none',
       httpOnly: true,
     });
@@ -55,29 +57,29 @@ export class AuthController {
       message: '카카오 로그인 성공',
       response: {
         accessToken,
-        nickname,
         email,
+        nickname,
       },
     };
   }
 
-  @Get('kakao/logout')
-  async logout(@Res() res): Promise<any> {
-    await this.authService.kakaoLogout();
+  // @Get('kakao/logout')
+  // async logout(@Res() res): Promise<any> {
+  //   await this.authService.kakaoLogout();
 
-    const _url =
-      KAKAO_AUTH_HOST +
-      '/oauth/logout?' +
-      `client_id=${KAKAO_CLIENT_ID}&` +
-      `logout_redirect_uri=${LOGOUT_REDIRECT_URI}`;
+  //   const _url =
+  //     KAKAO_AUTH_HOST +
+  //     '/oauth/logout?' +
+  //     `client_id=${KAKAO_CLIENT_ID}&` +
+  //     `logout_redirect_uri=${LOGOUT_REDIRECT_URI}`;
 
-    res.redirect(_url);
-  }
+  //   res.redirect(_url);
+  // }
 
-  @Get('kakao/unlink')
-  async unlink(): Promise<Result> {
-    return await this.authService.kakaoUnlink();
-  }
+  // @Get('kakao/unlink')
+  // async unlink(): Promise<Result> {
+  //   return await this.authService.kakaoUnlink();
+  // }
 
   /**
    * naver strategy
@@ -95,12 +97,19 @@ export class AuthController {
     @Req() req,
     @Res({ passthrough: true }) res: Response,
   ): Promise<any> {
-    const { accessToken, refreshToken, email, id } = req.user;
+    const { email, nickname } = req.user;
 
-    this.authService.setAccessToken(accessToken);
+    const accessToken = await this.authService.createAccessToken(
+      email,
+      nickname,
+    );
+    const refreshToken = await this.authService.createRefreshToken(
+      email,
+      nickname,
+    );
 
     res.cookie('resfreshToken', refreshToken, {
-      maxAge: 1000 * 60 * 60 * 24 * 30 * 2,
+      maxAge: 1000 * 60 * 60 * 24 * 14,
       sameSite: 'none',
       httpOnly: true,
     });
@@ -110,16 +119,16 @@ export class AuthController {
       message: '네이버 로그인 성공',
       response: {
         accessToken,
-        id,
         email,
+        nickname,
       },
     };
   }
 
-  @Get('naver/logout')
-  async naverLogout(): Promise<Result> {
-    return await this.authService.naverLogout();
-  }
+  // @Get('naver/logout')
+  // async naverLogout(): Promise<Result> {
+  //   return await this.authService.naverLogout();
+  // }
 
   /**
    * google strategy
@@ -133,18 +142,34 @@ export class AuthController {
 
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
-  async googleCallback(@Req() req): Promise<any> {
-    const { accessToken, email, name } = req.user;
+  async googleCallback(
+    @Req() req,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<any> {
+    const { email, nickname } = req.user;
 
-    this.authService.setAccessToken(accessToken);
+    const accessToken = await this.authService.createAccessToken(
+      email,
+      nickname,
+    );
+    const refreshToken = await this.authService.createRefreshToken(
+      email,
+      nickname,
+    );
+
+    res.cookie('resfreshToken', refreshToken, {
+      maxAge: 1000 * 60 * 60 * 24 * 14,
+      sameSite: 'none',
+      httpOnly: true,
+    });
 
     return {
       success: true,
       message: '구글 로그인 성공',
       response: {
         accessToken,
-        name,
         email,
+        nickname,
       },
     };
   }
