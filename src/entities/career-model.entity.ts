@@ -1,3 +1,4 @@
+import { ShapeType, SkillType } from 'src/common/custom-type';
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 
@@ -6,30 +7,38 @@ export class CareerModel {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column()
-  type: string;
+  @Column({
+    type: "enum",
+    enum: ShapeType
+  })
+  type: ShapeType;
 
   @Column({
     default: 'My Roadmap',
   })
   title: string;
 
-  @Column()
-  primaryTag: string;
+  @Column({
+    type: "enum",
+    enum: SkillType
+  })
+  primaryTag: SkillType;
 
   @Column({
     nullable: true,
+    type: "enum",
+    enum: SkillType
   })
-  secondaryTag: string;
+  secondaryTag: SkillType;
 
   @OneToOne(() => User)
   user: User;
 
   constructor(
-    type: string,
-    primaryTag: string,
+    type: ShapeType,
+    primaryTag: SkillType,
     user: User,
-    secondaryTag?: string,
+    secondaryTag?: SkillType,
   ) {
     this.type = type;
     this.title = 'My Roadmap';

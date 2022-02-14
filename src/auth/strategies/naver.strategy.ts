@@ -6,6 +6,7 @@ import {
   NAVER_CLIENT_ID,
   NAVER_CLIENT_SECRET,
 } from 'src/common/config';
+import { SNSType } from 'src/common/custom-type';
 import { checkUser } from 'src/common/utils';
 import { UserService } from 'src/user/user.service';
 
@@ -27,7 +28,7 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
   ): Promise<any> {
     const { email, nickname, id } = profile._json;
 
-    checkUser(id, email, nickname, 'naver', this._userService, done);
+    checkUser(id, email, nickname, SNSType.NAVER, this._userService, done);
 
     const user = {
       email,

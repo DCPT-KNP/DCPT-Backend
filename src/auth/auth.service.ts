@@ -22,9 +22,11 @@ export class AuthService {
     });
   }
 
-  async createAccessToken(email, nickname) {
+  async createAccessToken(email, nickname, snsId, snsType) {
     const payload = {
       type: 'accessToken',
+      sns_id: snsId,
+      sns_type: snsType,
       email: email,
       nickname: nickname,
     };

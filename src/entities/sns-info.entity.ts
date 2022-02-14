@@ -1,3 +1,4 @@
+import { SNSType } from 'src/common/custom-type';
 import {
   Column,
   CreateDateColumn,
@@ -16,8 +17,11 @@ export class SNSInfo {
   @Column()
   snsId: string;
 
-  @Column()
-  snsType: string;
+  @Column({
+    type: "enum",
+    enum: SNSType
+  })
+  snsType: SNSType;
 
   @Column()
   snsName: string;
@@ -32,7 +36,7 @@ export class SNSInfo {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  constructor(snsId: string, snsType: string, snsName: string) {
+  constructor(snsId: string, snsType: SNSType, snsName: string) {
     this.snsId = snsId;
     this.snsType = snsType;
     this.snsName = snsName;

@@ -2,12 +2,13 @@ import { CreateSNSInfoDto } from 'src/user/dto/create-sns-info.dto';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from 'src/user/user.service';
 import { VerifyCallback } from 'passport-kakao';
+import { SNSType } from './custom-type';
 
 export const checkUser = async (
   id: string,
   email: string,
   nickname: string,
-  type: string,
+  type: SNSType,
   _userService: UserService,
   done: VerifyCallback,
 ) => {

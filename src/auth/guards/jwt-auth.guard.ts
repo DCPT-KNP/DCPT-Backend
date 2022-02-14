@@ -31,7 +31,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') implements CanActivate {
     const token = authorization.replace('Bearer ', '');
     const result = await this.validate(token);
 
-    const findUser = await this._userService.findOneUserByNameAndEmail(result.nickname, result.email);
+    const { sns_id, sns_type } = result;
+
+    const findUser = await this._userService.findOneUser(sns_id, sns_type);
     const user: User = findUser.response;
 
     request.user = user;

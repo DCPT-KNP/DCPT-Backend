@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SNSType } from 'src/common/custom-type';
 import { Result } from 'src/common/result.interface';
 import { SNSInfo } from 'src/entities/sns-info.entity';
 import { User } from 'src/entities/user.entity';
@@ -17,7 +18,39 @@ export class UserService {
     private readonly _snsInfoRepository: Repository<SNSInfo>,
   ) {}
 
-  async findOneSNSInfo(id: string, type: string): Promise<Result> {
+  async findOneUser(id: string, type: SNSType): Promise<Result> {
+    try {
+      const user = await this._snsInfoRepository.findOne({
+        where: {
+          snsId: id,
+          snsType: type
+        },
+        relations: ["user"]
+      });
+      let msg = '';
+
+      if (!user) {
+        msg = '찾는 sns 정보가 존재하지 않음';
+      } else {
+        msg = 'sns 정보 찾기 성공';
+      }
+
+      return {
+        success: true,
+        message: msg,
+        response: user,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: 'sns 정보 찾기 오류',
+        response: null,
+        error: e,
+      };
+    }
+  }
+
+  async findOneSNSInfo(id: string, type: SNSType): Promise<Result> {
     try {
       const result = await this._snsInfoRepository.findOne({
         where: {

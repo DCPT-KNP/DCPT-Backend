@@ -35,11 +35,13 @@ export class AuthController {
     @Req() req,
     @Res({ passthrough: true }) res: Response,
   ): Promise<Result> {
-    const { nickname, email } = req.user;
+    const { id, nickname, email } = req.user;
 
     const accessToken = await this.authService.createAccessToken(
       email,
       nickname,
+      id,
+      'kakao'
     );
     const refreshToken = await this.authService.createRefreshToken(
       email,
@@ -97,11 +99,13 @@ export class AuthController {
     @Req() req,
     @Res({ passthrough: true }) res: Response,
   ): Promise<any> {
-    const { email, nickname } = req.user;
+    const { id, email, nickname } = req.user;
 
     const accessToken = await this.authService.createAccessToken(
       email,
       nickname,
+      id,
+      'naver'
     );
     const refreshToken = await this.authService.createRefreshToken(
       email,
@@ -146,11 +150,13 @@ export class AuthController {
     @Req() req,
     @Res({ passthrough: true }) res: Response,
   ): Promise<any> {
-    const { email, nickname } = req.user;
+    const { id, email, nickname } = req.user;
 
     const accessToken = await this.authService.createAccessToken(
       email,
       nickname,
+      id,
+      'google'
     );
     const refreshToken = await this.authService.createRefreshToken(
       email,

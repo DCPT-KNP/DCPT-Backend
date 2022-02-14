@@ -6,6 +6,7 @@ import {
   GOOGLE_CLIENT_ID,
   GOOGLE_SECRET,
 } from 'src/common/config';
+import { SNSType } from 'src/common/custom-type';
 import { checkUser } from 'src/common/utils';
 import { UserService } from 'src/user/user.service';
 
@@ -29,9 +30,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const { id } = profile;
     const { email, name } = profile._json;
 
-    checkUser(id, email, name, 'google', this._userService, done);
+    checkUser(id, email, name, SNSType.GOOGLE, this._userService, done);
 
     const user = {
+      id,
       email,
       nickname: name,
     };

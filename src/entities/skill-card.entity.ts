@@ -1,3 +1,4 @@
+import { SkillType } from 'src/common/custom-type';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import { Mission } from './mission.entity';
 import { User } from './user.entity';
@@ -10,8 +11,11 @@ export class SkillCard {
   @Column()
   id: string;
 
-  @Column()
-  tag: string;
+  @Column({
+    type: "enum",
+    enum: SkillType
+  })
+  tag: SkillType;
 
   @Column()
   title: string;

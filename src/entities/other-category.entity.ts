@@ -1,3 +1,4 @@
+import { SkillType } from 'src/common/custom-type';
 import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { User } from './user.entity';
 
@@ -6,8 +7,11 @@ export class OtherCategory {
   @PrimaryColumn()
   id: string;
 
-  @Column()
-  tag: string;
+  @Column({
+    type: "enum",
+    enum: SkillType
+  })
+  tag: SkillType;
 
   // many2one : user, othercategories
   @ManyToOne(() => User, (user) => user.otherCategories, {
