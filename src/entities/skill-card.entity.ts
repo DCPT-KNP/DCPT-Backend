@@ -12,8 +12,8 @@ export class SkillCard {
   id: string;
 
   @Column({
-    type: "enum",
-    enum: SkillType
+    type: 'enum',
+    enum: SkillType,
   })
   tag: SkillType;
 

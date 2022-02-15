@@ -1,10 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity({ name: 'job_groups' })
 export class JobGroup {
-  @PrimaryColumn({ type: 'uuid' })
-  uuid: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   name: string;
@@ -13,4 +13,13 @@ export class JobGroup {
     onDelete: 'CASCADE',
   })
   user: User;
+
+  constructor(name: string, user: User) {
+    this.name = name;
+    this.user = user;
+  }
+
+  static fromJson(json) {
+    return new JobGroup(json.name, json.user);
+  }
 }

@@ -18,8 +18,8 @@ export class SNSInfo {
   snsId: string;
 
   @Column({
-    type: "enum",
-    enum: SNSType
+    type: 'enum',
+    enum: SNSType,
   })
   snsType: SNSType;
 

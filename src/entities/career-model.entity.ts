@@ -8,8 +8,8 @@ export class CareerModel {
   id: string;
 
   @Column({
-    type: "enum",
-    enum: ShapeType
+    type: 'enum',
+    enum: ShapeType,
   })
   type: ShapeType;
 
@@ -19,15 +19,15 @@ export class CareerModel {
   title: string;
 
   @Column({
-    type: "enum",
-    enum: SkillType
+    type: 'enum',
+    enum: SkillType,
   })
   primaryTag: SkillType;
 
   @Column({
     nullable: true,
-    type: "enum",
-    enum: SkillType
+    type: 'enum',
+    enum: SkillType,
   })
   secondaryTag: SkillType;
 

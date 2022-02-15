@@ -41,7 +41,7 @@ export class AuthController {
       email,
       nickname,
       id,
-      'kakao'
+      'kakao',
     );
     const refreshToken = await this.authService.createRefreshToken(
       email,
@@ -105,7 +105,7 @@ export class AuthController {
       email,
       nickname,
       id,
-      'naver'
+      'naver',
     );
     const refreshToken = await this.authService.createRefreshToken(
       email,
@@ -156,7 +156,7 @@ export class AuthController {
       email,
       nickname,
       id,
-      'google'
+      'google',
     );
     const refreshToken = await this.authService.createRefreshToken(
       email,

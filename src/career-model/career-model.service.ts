@@ -28,11 +28,7 @@ export class CareerModelService {
     await queryRunner.startTransaction();
 
     try {
-      const findUser = await this._userService.findOneUser(
-        snsId,
-        snsType,
-      );
-
+      const findUser = await this._userService.findOneUser(snsId, snsType);
       const user: User = findUser.response.user;
 
       const newCareerModel = CareerModel.fromJson({ ...data, user });
@@ -46,14 +42,16 @@ export class CareerModelService {
       return {
         success: true,
         message: '커리어 모델 생성 성공',
-        response: null
+        response: null,
       };
     } catch (e) {
       await queryRunner.rollbackTransaction();
 
       switch (e.code) {
-        case "ER_WARN_DATA_TRUNCATED":
-          throw new BadRequestException("유효하지 않은 shape model이거나 skill type");
+        case 'ER_WARN_DATA_TRUNCATED':
+          throw new BadRequestException(
+            '유효하지 않은 shape model이거나 skill type',
+          );
         default:
           throw new BadRequestException(e.message);
       }

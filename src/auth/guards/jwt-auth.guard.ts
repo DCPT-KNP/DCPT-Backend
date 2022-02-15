@@ -15,7 +15,7 @@ import { AuthService } from '../auth.service';
 export class JwtAuthGuard extends AuthGuard('jwt') implements CanActivate {
   constructor(
     private readonly _authService: AuthService,
-    private readonly _userService: UserService
+    private readonly _userService: UserService,
   ) {
     super();
   }
