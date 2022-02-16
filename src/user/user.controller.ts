@@ -9,14 +9,14 @@ export class UserController {
   constructor(private readonly _userService: UserService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post("job-group")
+  @Post('job-group')
   async createJobGroup(@Req() req, @Body() data: CreateJobGroupDto) {
     const { snsId, snsType } = await req.user;
     return await this._userService.createJobGroup(snsId, snsType, data);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post("career-year")
+  @Post('career-year')
   async addCareerYear(@Req() req, @Body() data: CreateCareerYearDto) {
     const { snsId, snsType } = req.user;
     return await this._userService.addCareerYear(snsId, snsType, data);

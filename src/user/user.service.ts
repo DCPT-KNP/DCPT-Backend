@@ -186,7 +186,11 @@ export class UserService {
     }
   }
 
-  async createJobGroup(id: string, type: SNSType, data: CreateJobGroupDto): Promise<Result> {
+  async createJobGroup(
+    id: string,
+    type: SNSType,
+    data: CreateJobGroupDto,
+  ): Promise<Result> {
     const queryRunner = this.connection.createQueryRunner();
 
     await queryRunner.connect();
@@ -205,8 +209,8 @@ export class UserService {
 
       return {
         success: true,
-        message: "직군 생성 성공",
-        response: null
+        message: '직군 생성 성공',
+        response: null,
       };
     } catch (e) {
       await queryRunner.rollbackTransaction();
@@ -222,7 +226,11 @@ export class UserService {
     }
   }
 
-  async addCareerYear(id: string, type: SNSType, data: CreateCareerYearDto): Promise<Result> {
+  async addCareerYear(
+    id: string,
+    type: SNSType,
+    data: CreateCareerYearDto,
+  ): Promise<Result> {
     try {
       const findUser = await this.findOneUser(id, type);
       const user: User = findUser.response.user;
@@ -233,15 +241,15 @@ export class UserService {
 
       return {
         success: true,
-        message: "연차 등록 성공",
-        response: null
+        message: '연차 등록 성공',
+        response: null,
       };
     } catch (e) {
       return {
         success: false,
-        message: "연차 등록 실패",
+        message: '연차 등록 실패',
         response: null,
-        error: e
+        error: e,
       };
     }
   }
