@@ -17,7 +17,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
     const msg = exception.message;
-    const error = exception.name;
+    const error = exception.stack;
 
     response.status(status).json({
       success: false,

@@ -23,17 +23,17 @@ export class CareerModelController {
   ): Promise<Result> {
     const { snsId, snsType } = await req.user;
 
-    // if (data.otherTag === null) {
-    //   if (data.type === "T" || data.type === "PI") {
-    //     throw new BadRequestException("")
-    //   }
-    // }
-
     if (data.type === 'PI') {
-      if (data.secondaryTag === null) {
+      if (data.secondaryTag === undefined) {
         throw new BadRequestException(
           'secondary 역량이 포함되어 있지 않습니다',
         );
+      }
+    }
+
+    if (data.otherTag.length < 1 || data.otherTag.length > 3) {
+      if (data.type === 'T' || data.type === 'PI') {
+        throw new BadRequestException('1~3개의 기타역량을 포함해야합니다.');
       }
     }
 

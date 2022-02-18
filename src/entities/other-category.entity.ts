@@ -1,10 +1,10 @@
 import { SkillType } from 'src/common/custom-type';
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity({ name: 'other_categories' })
 export class OtherCategory {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column({
@@ -18,4 +18,13 @@ export class OtherCategory {
     onDelete: 'CASCADE',
   })
   user: User;
+
+  constructor(tag: SkillType, user: User) {
+    this.tag = tag;
+    this.user = user;
+  }
+
+  static fromJson(json) {
+    return new OtherCategory(json.tag, json.user);
+  }
 }

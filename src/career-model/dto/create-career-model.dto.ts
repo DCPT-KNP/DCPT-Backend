@@ -1,17 +1,18 @@
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional } from 'class-validator';
+import { ShapeType, SkillType } from 'src/common/custom-type';
 
 export class CreateCareerModelDto {
-  @IsString()
-  type: string;
+  @IsEnum(ShapeType)
+  type: ShapeType;
 
-  @IsString()
-  primaryTag: string;
-
-  @IsOptional()
-  @IsString()
-  secondaryTag?: string = null;
+  @IsEnum(SkillType)
+  primaryTag: SkillType;
 
   @IsOptional()
-  @IsArray()
-  otherTag?: string[];
+  @IsEnum(SkillType)
+  secondaryTag?: SkillType;
+
+  @IsOptional()
+  @IsEnum(SkillType, { each: true })
+  otherTag?: SkillType[] = [];
 }
