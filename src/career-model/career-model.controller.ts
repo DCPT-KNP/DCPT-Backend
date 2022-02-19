@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Post,
   Req,
   UseGuards,
@@ -21,7 +22,7 @@ export class CareerModelController {
     @Req() req,
     @Body() data: CreateCareerModelDto,
   ): Promise<Result> {
-    const { snsId, snsType } = await req.user;
+    const { snsId, snsType } = req.user;
 
     if (data.type === 'PI') {
       if (data.secondaryTag === undefined) {
@@ -38,5 +39,13 @@ export class CareerModelController {
     }
 
     return await this._careerModelService.create(snsId, snsType, data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async getInfo(@Req() req) {
+    const { snsId, snsType } = req.user;
+
+    return await this._careerModelService.getInfo(snsId, snsType);
   }
 }

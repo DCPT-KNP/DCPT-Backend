@@ -34,8 +34,8 @@ export class CareerModelService {
 
       // 기타 역량 생성
       if (data.otherTag !== undefined) {
-        data.otherTag.forEach(async (name) => {
-          const newOtherCategory = OtherCategory.fromJson({ name, user });
+        data.otherTag.forEach(async (tag) => {
+          const newOtherCategory = OtherCategory.fromJson({ tag, user });
           await queryRunner.manager.save(OtherCategory, newOtherCategory);
         });
       }
@@ -71,5 +71,11 @@ export class CareerModelService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async getInfo(snsId: string, snsType: SNSType) {
+    const result = await this._careerModelRepository
+      .createQueryBuilder('career_model')
+      // .leftJoinAndSelect("career_model.user")
   }
 }
