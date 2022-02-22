@@ -81,11 +81,11 @@ export class CareerModelService {
   async getCareerModel(user: User): Promise<Result> {
     try {
       const result = await this._userRepository.findOne({
-        select: ['id', 'email', 'nickname', 'careerModel'],
+        select: ['id', 'email', 'nickname', 'careerModel', 'otherCategories'],
         where: {
           id: user.id,
         },
-        relations: ['careerModel'],
+        relations: ['careerModel', 'otherCategories'],
       });
 
       return {
@@ -161,6 +161,31 @@ export class CareerModelService {
       };
     } finally {
       await queryRunner.release();
+    }
+  }
+
+  async getSkillCard(user: User): Promise<Result> {
+    try {
+      const result = await this._userRepository.find({
+        select: ['id', 'email', 'nickname', 'skillCards'],
+        where: {
+          id: user.id,
+        },
+        relations: ['skillCards'],
+      });
+
+      return {
+        success: true,
+        message: '스킬 카드 조회 성공',
+        response: result,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: '스킬 카드 조회 실패',
+        response: null,
+        error: e,
+      };
     }
   }
 }

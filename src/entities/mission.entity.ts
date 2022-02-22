@@ -1,13 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { SkillCard } from './skill-card.entity';
 
 @Entity({ name: 'missions' })
 export class Mission {
-  @PrimaryColumn({ type: 'uuid' })
-  uuid: string;
-
-  @Column()
-  id: string;
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: number;
 
   @Column()
   missionTitle: string;
@@ -20,4 +17,10 @@ export class Mission {
     onDelete: 'CASCADE',
   })
   skillCard: SkillCard;
+
+  constructor(missionTitle: string, skillCard: SkillCard) {
+    this.missionTitle = missionTitle;
+    this.done = false;
+    this.skillCard = skillCard;
+  }
 }

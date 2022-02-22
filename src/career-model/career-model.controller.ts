@@ -60,7 +60,7 @@ export class CareerModelController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post("skill-card")
+  @Post('skill-card')
   async createSkillCard(
     @Req() req,
     @Body() data: CreateSkillCardDto,
@@ -68,5 +68,13 @@ export class CareerModelController {
     const { user } = req.user;
 
     return await this._careerModelService.createSkillCard(user, data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('skill-card')
+  async getSkillCard(@Req() req) {
+    const { user } = req.user;
+
+    return await this._careerModelService.getSkillCard(user);
   }
 }

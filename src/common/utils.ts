@@ -6,7 +6,6 @@ import { SkillType, SNSType } from './custom-type';
 import { v4 as uuidv4 } from 'uuid';
 import skillList from '../static/skill_category.json';
 import { User } from 'src/entities/user.entity';
-import { CreateSkillCardDto } from 'src/career-model/dto/create-skill-card.dto';
 import { SkillCard } from 'src/entities/skill-card.entity';
 
 export const checkUser = async (

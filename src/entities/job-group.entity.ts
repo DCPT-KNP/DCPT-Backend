@@ -3,7 +3,7 @@ import { User } from './user.entity';
 
 @Entity({ name: 'job_groups' })
 export class JobGroup {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
   @Column()
