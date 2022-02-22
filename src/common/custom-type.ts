@@ -19,3 +19,9 @@ export enum SkillType {
   BXD = 'BXD',
   GRD = 'GRD',
 }
+
+export enum CardStatusType {
+  NO_STARTED = 'No Started',
+  IN_PROGRESS = 'In Progress',
+  DONE = 'Done',
+}

@@ -11,6 +11,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Result } from 'src/common/result.interface';
 import { CareerModelService } from './career-model.service';
 import { CreateCareerModelDto } from './dto/create-career-model.dto';
+import { CreateSkillCardDto } from './dto/create-skill-card.dto';
 
 @Controller('career-model')
 export class CareerModelController {
@@ -38,14 +39,34 @@ export class CareerModelController {
       }
     }
 
-    return await this._careerModelService.create(snsId, snsType, data);
+    return await this._careerModelService.createCareerModel(
+      snsId,
+      snsType,
+      data,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getInfo(@Req() req) {
-    const { snsId, snsType } = req.user;
+  async getCareerModel(@Req() req) {
+    const { user } = req.user;
 
-    return await this._careerModelService.getInfo(snsId, snsType);
+    return await this._careerModelService.getCareerModel(user);
+  }
+
+  @Get('skill')
+  async getSkillInfo() {
+    return this._careerModelService.getSkillInfo();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post("skill-card")
+  async createSkillCard(
+    @Req() req,
+    @Body() data: CreateSkillCardDto,
+  ): Promise<Result> {
+    const { user } = req.user;
+
+    return await this._careerModelService.createSkillCard(user, data);
   }
 }

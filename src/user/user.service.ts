@@ -84,66 +84,6 @@ export class UserService {
     }
   }
 
-  async findOneUserByUUID(uuid: string): Promise<Result> {
-    try {
-      const result = await this._userRepository.findOne(uuid);
-      let msg = '';
-
-      if (!result) {
-        msg = '찾는 유저가 존재하지 않음';
-      } else {
-        msg = '유저 찾기 성공';
-      }
-
-      return {
-        success: true,
-        message: msg,
-        response: result,
-      };
-    } catch (e) {
-      return {
-        success: false,
-        message: '유저 찾기 오류',
-        response: null,
-        error: e,
-      };
-    }
-  }
-
-  async findOneUserByNameAndEmail(
-    name: string,
-    email: string,
-  ): Promise<Result> {
-    try {
-      const result = await this._userRepository.findOne({
-        where: {
-          nickname: name,
-          email: email,
-        },
-      });
-      let msg = '';
-
-      if (!result) {
-        msg = '찾는 유저가 존재하지 않음';
-      } else {
-        msg = '유저 찾기 성공';
-      }
-
-      return {
-        success: true,
-        message: msg,
-        response: result,
-      };
-    } catch (e) {
-      return {
-        success: false,
-        message: '유저 찾기 발생',
-        response: null,
-        error: e,
-      };
-    }
-  }
-
   async create(
     userData: CreateUserDto,
     snsInfoData: CreateSNSInfoDto,
@@ -248,6 +188,31 @@ export class UserService {
       return {
         success: false,
         message: '연차 등록 실패',
+        response: null,
+        error: e,
+      };
+    }
+  }
+
+  async getUserAndJob(user: User): Promise<Result> {
+    try {
+      const result = await this._userRepository.findOne({
+        select: ['id', 'email', 'nickname', 'jobGroups'],
+        where: {
+          id: user.id,
+        },
+        relations: ['jobGroups'],
+      });
+
+      return {
+        success: true,
+        message: '유저와 직군 정보 조회 성공',
+        response: result,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: '유저와 직군 정보 조회 실패',
         response: null,
         error: e,
       };

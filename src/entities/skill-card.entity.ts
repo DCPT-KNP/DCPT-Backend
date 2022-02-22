@@ -1,4 +1,4 @@
-import { SkillType } from 'src/common/custom-type';
+import { CardStatusType, SkillType } from 'src/common/custom-type';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import { Mission } from './mission.entity';
 import { User } from './user.entity';
@@ -7,9 +7,6 @@ import { User } from './user.entity';
 export class SkillCard {
   @PrimaryColumn({ type: 'uuid' })
   uuid: string;
-
-  @Column()
-  id: string;
 
   @Column({
     type: 'enum',
@@ -25,6 +22,12 @@ export class SkillCard {
   })
   description: string;
 
+  @Column({
+    type: 'enum',
+    enum: CardStatusType,
+  })
+  status: CardStatusType;
+
   // many2one : user, skillcard
   @ManyToOne(() => User, (user) => user.skillCards, {
     onDelete: 'CASCADE',
@@ -34,4 +37,19 @@ export class SkillCard {
   // one2many : mission, skillcard
   @OneToMany(() => Mission, (mission) => mission.skillCard)
   missions: Mission[];
+
+  constructor(
+    uuid: string,
+    tag: SkillType,
+    title: string,
+    description: string,
+    user: User,
+  ) {
+    this.uuid = uuid;
+    this.tag = tag;
+    this.title = title;
+    this.description = description;
+    this.status = CardStatusType.NO_STARTED;
+    this.user = user;
+  }
 }

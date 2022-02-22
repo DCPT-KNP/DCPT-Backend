@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateCareerYearDto } from './dto/create-career-year.dto';
 import { CreateJobGroupDto } from './dto/create-job-group.dto';
@@ -20,5 +20,13 @@ export class UserController {
   async addCareerYear(@Req() req, @Body() data: CreateCareerYearDto) {
     const { snsId, snsType } = req.user;
     return await this._userService.addCareerYear(snsId, snsType, data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async getUserAndJob(@Req() req) {
+    const { user } = req.user;
+
+    return await this._userService.getUserAndJob(user);
   }
 }

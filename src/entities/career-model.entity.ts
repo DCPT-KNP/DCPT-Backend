@@ -5,7 +5,7 @@ import { User } from './user.entity';
 @Entity({ name: 'career_models' })
 export class CareerModel {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({
     type: 'enum',

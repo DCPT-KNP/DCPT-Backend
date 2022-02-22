@@ -5,7 +5,7 @@ import { User } from './user.entity';
 @Entity({ name: 'other_categories' })
 export class OtherCategory {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({
     type: 'enum',

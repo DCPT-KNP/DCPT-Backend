@@ -12,7 +12,7 @@ import { User } from './user.entity';
 @Entity({ name: 'sns_info' })
 export class SNSInfo {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   snsId: string;

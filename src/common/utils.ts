@@ -2,7 +2,12 @@ import { CreateSNSInfoDto } from 'src/user/dto/create-sns-info.dto';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from 'src/user/user.service';
 import { VerifyCallback } from 'passport-kakao';
-import { SNSType } from './custom-type';
+import { SkillType, SNSType } from './custom-type';
+import { v4 as uuidv4 } from 'uuid';
+import skillList from '../static/skill_category.json';
+import { User } from 'src/entities/user.entity';
+import { CreateSkillCardDto } from 'src/career-model/dto/create-skill-card.dto';
+import { SkillCard } from 'src/entities/skill-card.entity';
 
 export const checkUser = async (
   id: string,
@@ -34,4 +39,38 @@ export const checkUser = async (
       });
     }
   }
+};
+
+export const createSkill = (
+  queryRunner: any,
+  tag: SkillType,
+  user: User,
+  isPrimaryOrSecondary: boolean,
+) => {
+  return new Promise(async (resolve, reject) => {
+    const info = skillList[tag];
+    const newDefaultSkill = new SkillCard(
+      uuidv4(),
+      tag,
+      info.default.title,
+      info.default.description,
+      user,
+    );
+    await queryRunner.manager.save(SkillCard, newDefaultSkill);
+
+    if (isPrimaryOrSecondary) {
+      info.other.forEach(async (item) => {
+        const newOtherSkill = new SkillCard(
+          uuidv4(),
+          tag,
+          item.title,
+          item.description,
+          user,
+        );
+        await queryRunner.manager.save(SkillCard, newOtherSkill);
+      });
+    }
+
+    resolve(true);
+  });
 };

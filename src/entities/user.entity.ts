@@ -17,7 +17,7 @@ import { SNSInfo } from './sns-info.entity';
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   email: string;
