@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -12,6 +13,7 @@ import { Result } from 'src/common/result.interface';
 import { CareerModelService } from './career-model.service';
 import { CreateCareerModelDto } from './dto/create-career-model.dto';
 import { CreateSkillCardDto } from './dto/create-skill-card.dto';
+import { UpdateStatusSkillCardDto } from './dto/update-status-skill-card.dto';
 
 @Controller('career-model')
 export class CareerModelController {
@@ -76,5 +78,11 @@ export class CareerModelController {
     const { user } = req.user;
 
     return await this._careerModelService.getSkillCard(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('skill-card')
+  async modStatusSkillCard(@Body() data: UpdateStatusSkillCardDto) {
+    return await this._careerModelService.modStatusSkillCard(data.uuid, data.type);
   }
 }

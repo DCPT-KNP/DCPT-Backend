@@ -21,7 +21,7 @@ export enum SkillType {
 }
 
 export enum CardStatusType {
-  NO_STARTED = 'No Started',
+  NOT_STARTED = 'Not Started',
   IN_PROGRESS = 'In Progress',
   DONE = 'Done',
 }

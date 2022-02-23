@@ -49,7 +49,7 @@ export class SkillCard {
     this.tag = tag;
     this.title = title;
     this.description = description;
-    this.status = CardStatusType.NO_STARTED;
+    this.status = CardStatusType.NOT_STARTED;
     this.user = user;
   }
 }

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SkillType, SNSType } from 'src/common/custom-type';
+import { CardStatusType, SkillType, SNSType } from 'src/common/custom-type';
 import { Result } from 'src/common/result.interface';
 import { CareerModel } from 'src/entities/career-model.entity';
 import { OtherCategory } from 'src/entities/other-category.entity';
@@ -11,6 +11,7 @@ import { CreateCareerModelDto } from './dto/create-career-model.dto';
 import skillList from '../static/skill_category.json';
 import { CreateSkillCardDto } from './dto/create-skill-card.dto';
 import { createSkill } from 'src/common/utils';
+import { SkillCard } from 'src/entities/skill-card.entity';
 
 @Injectable()
 export class CareerModelService {
@@ -21,6 +22,8 @@ export class CareerModelService {
     private readonly _careerModelRepository: Repository<CareerModel>,
     @InjectRepository(User)
     private readonly _userRepository: Repository<User>,
+    @InjectRepository(SkillCard)
+    private readonly _skillCardRepository: Repository<SkillCard>,
   ) {}
 
   async createCareerModel(
@@ -183,6 +186,33 @@ export class CareerModelService {
       return {
         success: false,
         message: '스킬 카드 조회 실패',
+        response: null,
+        error: e,
+      };
+    }
+  }
+
+  async modStatusSkillCard(uuid: string, type: CardStatusType): Promise<Result> {
+    try {
+      const result = await this._skillCardRepository.findOne({
+        where: {
+          uuid,
+        },
+      });
+
+      result.status = type;
+
+      this._skillCardRepository.save(result);
+
+      return {
+        success: true,
+        message: '스킬 카드 진행 상황 수정 완료',
+        response: result,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: '스킬 카드 진행 상황 수정 실패',
         response: null,
         error: e,
       };
