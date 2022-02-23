@@ -3,7 +3,6 @@ import {
   Body,
   Controller,
   Get,
-  Patch,
   Post,
   Req,
   UseGuards,
@@ -12,8 +11,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Result } from 'src/common/result.interface';
 import { CareerModelService } from './career-model.service';
 import { CreateCareerModelDto } from './dto/create-career-model.dto';
-import { CreateSkillCardDto } from './dto/create-skill-card.dto';
-import { UpdateStatusSkillCardDto } from './dto/update-status-skill-card.dto';
 
 @Controller('career-model')
 export class CareerModelController {
@@ -59,30 +56,5 @@ export class CareerModelController {
   @Get('skill')
   async getSkillInfo() {
     return this._careerModelService.getSkillInfo();
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('skill-card')
-  async createSkillCard(
-    @Req() req,
-    @Body() data: CreateSkillCardDto,
-  ): Promise<Result> {
-    const { user } = req.user;
-
-    return await this._careerModelService.createSkillCard(user, data);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('skill-card')
-  async getSkillCard(@Req() req) {
-    const { user } = req.user;
-
-    return await this._careerModelService.getSkillCard(user);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Patch('skill-card')
-  async modStatusSkillCard(@Body() data: UpdateStatusSkillCardDto) {
-    return await this._careerModelService.modStatusSkillCard(data.uuid, data.type);
   }
 }

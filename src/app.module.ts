@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DB_DATABASE, DB_PASSWORD, DB_USERNAME } from './common/config';
 import { UserModule } from './user/user.module';
 import { CareerModelModule } from './career-model/career-model.module';
+import { SkillCardModule } from './skill-card/skill-card.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { CareerModelModule } from './career-model/career-model.module';
     AuthModule,
     UserModule,
     CareerModelModule,
+    SkillCardModule,
   ],
 })
 export class AppModule {

@@ -6,13 +6,12 @@ import { CareerModel } from 'src/entities/career-model.entity';
 import { UserModule } from 'src/user/user.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { User } from 'src/entities/user.entity';
-import { SkillCard } from 'src/entities/skill-card.entity';
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
-    TypeOrmModule.forFeature([CareerModel, User, SkillCard]),
+    TypeOrmModule.forFeature([CareerModel, User]),
   ],
   providers: [CareerModelService],
   controllers: [CareerModelController],
