@@ -53,6 +53,7 @@ export const createSkill = (
       tag,
       info.default.title,
       info.default.description,
+      info.default.tip,
       user,
     );
     await queryRunner.manager.save(SkillCard, newDefaultSkill);
@@ -64,6 +65,7 @@ export const createSkill = (
           tag,
           item.title,
           item.description,
+          item.tip,
           user,
         );
         await queryRunner.manager.save(SkillCard, newOtherSkill);

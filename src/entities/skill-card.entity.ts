@@ -23,6 +23,11 @@ export class SkillCard {
   description: string;
 
   @Column({
+    type: 'text',
+  })
+  tip: string;
+
+  @Column({
     type: 'enum',
     enum: CardStatusType,
   })
@@ -43,12 +48,14 @@ export class SkillCard {
     tag: SkillType,
     title: string,
     description: string,
+    tip: string,
     user: User,
   ) {
     this.uuid = uuid;
     this.tag = tag;
     this.title = title;
     this.description = description;
+    this.tip = tip;
     this.status = CardStatusType.NOT_STARTED;
     this.user = user;
   }

@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -12,6 +15,8 @@ import { CreateSkillCardDto } from 'src/skill-card/dto/create-skill-card.dto';
 import { UpdateStatusSkillCardDto } from 'src/skill-card/dto/update-status-skill-card.dto';
 import { Result } from 'src/common/result.interface';
 import { SkillCardService } from './skill-card.service';
+import { UpdateMissionDto } from './dto/update-mission.dto';
+import { CreateMissionDto } from './dto/create-mission.dto';
 
 @Controller('skill-card')
 export class SkillCardController {
@@ -43,5 +48,33 @@ export class SkillCardController {
       data.uuid,
       data.type,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('mission')
+  async addMission(@Body() data: CreateMissionDto) {
+    const { uuid, title } = data;
+
+    return await this._skillCardService.addMission(uuid, title);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('mission/:uuid')
+  async getMisisonList(@Param('uuid') uuid: string) {
+    return await this._skillCardService.getMissionList(uuid);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('mission')
+  async modMisison(@Body() data: UpdateMissionDto) {
+    const { id, title, done } = data;
+
+    return await this._skillCardService.modMission(id, title, done);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('mission')
+  async deleteMission(@Query('id') id: number) {
+    return await this._skillCardService.deleteMission(id);
   }
 }
