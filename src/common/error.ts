@@ -15,7 +15,7 @@ export const Err = {
       message: '유효하지 않은 토큰입니다.',
     },
     JWT_EXPIRED: {
-      code: 410,
+      code: 401,
       message: '토큰이 만료되었습니다.',
     },
     JWT_NOT_REISSUED: {

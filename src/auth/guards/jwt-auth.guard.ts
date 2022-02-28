@@ -1,9 +1,9 @@
 import {
-  BadRequestException,
   CanActivate,
   ExecutionContext,
   HttpException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Err } from 'src/common/error';
@@ -47,13 +47,13 @@ export class JwtAuthGuard extends AuthGuard('jwt') implements CanActivate {
     } catch (e) {
       switch (e.message) {
         case 'invalid token':
-          throw new BadRequestException(Err.TOKEN.INVALID_TOKEN);
+          throw new UnauthorizedException(Err.TOKEN.INVALID_TOKEN);
 
         case 'invalid signature':
-          throw new BadRequestException(Err.TOKEN.INVALID_TOKEN);
+          throw new UnauthorizedException(Err.TOKEN.INVALID_TOKEN);
 
         case 'jwt expired':
-          throw new BadRequestException(Err.TOKEN.JWT_EXPIRED);
+          throw new UnauthorizedException(Err.TOKEN.JWT_EXPIRED);
 
         default:
           throw new HttpException('서버 오류입니다.', 500);

@@ -102,7 +102,7 @@ export class SkillCardService {
 
       result.status = type;
 
-      this._skillCardRepository.save(result);
+      await this._skillCardRepository.save(result);
 
       return {
         success: true,

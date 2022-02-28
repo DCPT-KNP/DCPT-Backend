@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 
 const envFound = dotenv.config({
-  path: process.env.NODE_ENV === 'dev' ? '.env' : '.env.test',
+  path: process.env.NODE_ENV === 'dev' ? '.env' : '.env.prod',
 });
 
 if (envFound.error) {
