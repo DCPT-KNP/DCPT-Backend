@@ -2,7 +2,12 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DB_DATABASE, DB_HOST, DB_PASSWORD, DB_USERNAME } from './common/config';
+import {
+  DB_DATABASE,
+  DB_HOST,
+  DB_PASSWORD,
+  DB_USERNAME,
+} from './common/config';
 import { UserModule } from './user/user.module';
 import { CareerModelModule } from './career-model/career-model.module';
 import { SkillCardModule } from './skill-card/skill-card.module';
