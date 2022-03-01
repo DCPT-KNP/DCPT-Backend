@@ -21,6 +21,9 @@ async function bootstrap() {
   // custom filter
   app.useGlobalFilters(new HttpExceptionFilter());
 
+  // CORS
+  app.enableCors();
+
   // middleware
   app.use(cookieParser());
 
