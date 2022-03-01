@@ -1,10 +1,21 @@
-import { Controller, Get, Redirect, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Redirect,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { Result } from 'src/common/result.interface';
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { KakaoAuthGuard } from './guards/kakao-auth.guard';
 import { NaverAuthGuard } from './guards/naver-auth.guard';
+import Axios from 'axios';
+import { KAKAO_CLIENT_ID, KAKAO_REDIRECT_URI } from 'src/common/config';
+import qs from 'qs';
 
 @Controller('auth')
 export class AuthController {
@@ -18,55 +29,82 @@ export class AuthController {
   foo() {
     console.log('?');
     return {
-      success: true,
+      url: 'https://docs.nestjs.com/v5/',
+      statusCode: 301,
     };
   }
 
   /**
    * kakao strategy
    */
-  @UseGuards(KakaoAuthGuard)
   @Get('kakao')
-  async kakaoLogin() {
-    return;
-  }
-
-  @UseGuards(KakaoAuthGuard)
-  @Redirect('http://localhost:3000')
-  @Get('kakao/callback')
-  async kakaoCallback(
-    @Req() req,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<Result> {
-    const { id, nickname, email } = req.user;
-
-    const accessToken = await this.authService.createAccessToken(
-      email,
-      nickname,
-      id,
-      'kakao',
-    );
-    const refreshToken = await this.authService.createRefreshToken(
-      email,
-      nickname,
-    );
-
-    res.cookie('resfreshToken', refreshToken, {
-      maxAge: 1000 * 60 * 60 * 24 * 14,
-      sameSite: 'none',
-      httpOnly: true,
-    });
-
-    return {
-      success: true,
-      message: '카카오 로그인 성공',
-      response: {
-        accessToken,
-        email,
-        nickname,
-      },
+  async kakaoLogin(@Query('code') code) {
+    const param = {
+      grant_type: 'authorization_code',
+      client_id: KAKAO_CLIENT_ID,
+      redirect_uri: KAKAO_REDIRECT_URI,
+      code: code,
     };
+
+    try {
+      const result = await Axios.post(
+        'https://kauth.kakao.com/oauth/token',
+        qs.stringify(param),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        },
+      );
+
+      return result.data;
+    } catch (e) {
+      return e;
+    }
   }
+
+  // @UseGuards(KakaoAuthGuard)
+  // @Get('kakao')
+  // async kakaoLogin() {
+  //   return;
+  // }
+
+  // @UseGuards(KakaoAuthGuard)
+  // @Redirect('http://localhost:3000')
+  // @Get('kakao/callback')
+  // async kakaoCallback(
+  //   @Req() req,
+  //   @Res({ passthrough: true }) res: Response,
+  // ): Promise<Result> {
+  //   const { id, nickname, email } = req.user;
+
+  //   const accessToken = await this.authService.createAccessToken(
+  //     email,
+  //     nickname,
+  //     id,
+  //     'kakao',
+  //   );
+  //   const refreshToken = await this.authService.createRefreshToken(
+  //     email,
+  //     nickname,
+  //   );
+
+  //   res.cookie('resfreshToken', refreshToken, {
+  //     maxAge: 1000 * 60 * 60 * 24 * 14,
+  //     sameSite: 'none',
+  //     httpOnly: true,
+  //   });
+
+  //   return {
+  //     success: true,
+  //     message: '카카오 로그인 성공',
+  //     response: {
+  //       accessToken,
+  //       email,
+  //       nickname,
+  //     },
+  //   };
+  // }
 
   // @Get('kakao/logout')
   // async logout(@Res() res): Promise<any> {
