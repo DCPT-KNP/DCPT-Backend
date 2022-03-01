@@ -6,7 +6,7 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api');
 
@@ -20,6 +20,13 @@ async function bootstrap() {
 
   // custom filter
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  // CORS
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
 
   // middleware
   app.use(cookieParser());
