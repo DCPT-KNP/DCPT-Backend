@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Redirect, Req, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { Result } from 'src/common/result.interface';
 import { AuthService } from './auth.service';
@@ -13,8 +13,10 @@ export class AuthController {
   /**
    * test
    */
+  @Redirect('https://docs.nestjs.com', 302)
   @Get('/')
   foo() {
+    console.log('?');
     return {
       success: true,
     };
@@ -30,6 +32,7 @@ export class AuthController {
   }
 
   @UseGuards(KakaoAuthGuard)
+  @Redirect('http://localhost:3000')
   @Get('kakao/callback')
   async kakaoCallback(
     @Req() req,
