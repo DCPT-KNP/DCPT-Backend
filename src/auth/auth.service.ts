@@ -92,8 +92,6 @@ export class AuthService {
   }
 
   async getKakaoUserInfo(accessToken) {
-    console.log(accessToken);
-
     try {
       const {
         data: {
