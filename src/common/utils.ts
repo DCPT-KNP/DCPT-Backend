@@ -14,7 +14,7 @@ export const checkUser = async (
   nickname: string,
   type: SNSType,
   _userService: UserService,
-  done: VerifyCallback,
+  done?: VerifyCallback,
 ) => {
   const findUser = await _userService.findOneSNSInfo(id, type);
 
@@ -32,12 +32,22 @@ export const checkUser = async (
     const result = await _userService.create(newUser, newSNSInfo);
 
     if (!result.success) {
-      done(null, false, {
+      return {
+        success: false,
         message: result.message,
+        response: null,
         error: result.error,
-      });
+      };
+      // done(null, false, {
+      //   message: result.message,
+      //   error: result.error,
+      // });
     }
   }
+
+  return {
+    success: true,
+  };
 };
 
 export const createSkill = (

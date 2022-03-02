@@ -1,20 +1,30 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
 import {
   AES_KEY,
   JWT_SECRET,
   KAKAO_API_HOST,
+  KAKAO_CLIENT_ID,
+  KAKAO_REDIRECT_URI,
   NAVER_CLIENT_ID,
   NAVER_CLIENT_SECRET,
   NAVER_HOST,
 } from 'src/common/config';
 import { Result } from 'src/common/result.interface';
 import * as CryptoJS from 'crypto-js';
+import Axios from 'axios';
+import qs from 'qs';
+import { checkUser } from 'src/common/utils';
+import { SNSType } from 'src/common/custom-type';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly _userservice: UserService,
+  ) {}
 
   async validateToken(token: string) {
     return await this.jwtService.verify(token, {
@@ -54,6 +64,70 @@ export class AuthService {
     ).toString();
 
     return refreshToken;
+  }
+
+  async getKakaoToken(code) {
+    const param = {
+      grant_type: 'authorization_code',
+      client_id: KAKAO_CLIENT_ID,
+      redirect_uri: KAKAO_REDIRECT_URI,
+      code: code,
+    };
+
+    try {
+      const result = await Axios.post(
+        'https://kauth.kakao.com/oauth/token',
+        qs.stringify(param),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        },
+      );
+
+      return result.data;
+    } catch (e) {
+      return e;
+    }
+  }
+
+  async getKakaoUserInfo(accessToken) {
+    try {
+      const {
+        data: {
+          id,
+          kakao_account: {
+            profile: { nickname },
+            email,
+          },
+        },
+      } = await Axios.get('https://kapi.kakao.com/v2/user/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const result = await checkUser(
+        id,
+        email,
+        nickname,
+        SNSType.KAKAO,
+        this._userservice,
+      );
+
+      if (!result.success) {
+        throw new HttpException(result, 500);
+      }
+
+      return {
+        id,
+        nickname,
+        email,
+      };
+    } catch (e) {
+      console.log(e);
+      throw new HttpException(e, 500);
+    }
   }
 
   async kakaoLogout(accessToken: string): Promise<Result> {

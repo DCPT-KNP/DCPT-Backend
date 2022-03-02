@@ -8,18 +8,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { Result } from 'src/common/result.interface';
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
-import { KakaoAuthGuard } from './guards/kakao-auth.guard';
 import { NaverAuthGuard } from './guards/naver-auth.guard';
-import Axios from 'axios';
-import { KAKAO_CLIENT_ID, KAKAO_REDIRECT_URI } from 'src/common/config';
-import qs from 'qs';
+import { SNSType } from 'src/common/custom-type';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly _authService: AuthService) {}
 
   /**
    * test
@@ -38,29 +34,39 @@ export class AuthController {
    * kakao strategy
    */
   @Get('kakao')
-  async kakaoLogin(@Query('code') code) {
-    const param = {
-      grant_type: 'authorization_code',
-      client_id: KAKAO_CLIENT_ID,
-      redirect_uri: KAKAO_REDIRECT_URI,
-      code: code,
+  async kakaoLogin(
+    @Query('code') code,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { access_token } = await this._authService.getKakaoToken(code);
+    const { id, nickname, email } = await this._authService.getKakaoUserInfo(
+      access_token,
+    );
+
+    const accessToken = await this._authService.createAccessToken(
+      email,
+      nickname,
+      id,
+      SNSType.KAKAO,
+    );
+    const refreshToken = await this._authService.createRefreshToken(
+      email,
+      nickname,
+    );
+
+    res.cookie('resfreshToken', refreshToken, {
+      maxAge: 1000 * 60 * 60 * 24 * 14,
+      sameSite: 'none',
+      httpOnly: true,
+    });
+
+    return {
+      success: true,
+      message: '카카오 로그인 성공',
+      response: {
+        accessToken,
+      },
     };
-
-    try {
-      const result = await Axios.post(
-        'https://kauth.kakao.com/oauth/token',
-        qs.stringify(param),
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        },
-      );
-
-      return result.data;
-    } catch (e) {
-      return e;
-    }
   }
 
   // @UseGuards(KakaoAuthGuard)
@@ -78,13 +84,13 @@ export class AuthController {
   // ): Promise<Result> {
   //   const { id, nickname, email } = req.user;
 
-  //   const accessToken = await this.authService.createAccessToken(
+  //   const accessToken = await this._authService.createAccessToken(
   //     email,
   //     nickname,
   //     id,
   //     'kakao',
   //   );
-  //   const refreshToken = await this.authService.createRefreshToken(
+  //   const refreshToken = await this._authService.createRefreshToken(
   //     email,
   //     nickname,
   //   );
@@ -108,7 +114,7 @@ export class AuthController {
 
   // @Get('kakao/logout')
   // async logout(@Res() res): Promise<any> {
-  //   await this.authService.kakaoLogout();
+  //   await this._authService.kakaoLogout();
 
   //   const _url =
   //     KAKAO_AUTH_HOST +
@@ -121,7 +127,7 @@ export class AuthController {
 
   // @Get('kakao/unlink')
   // async unlink(): Promise<Result> {
-  //   return await this.authService.kakaoUnlink();
+  //   return await this._authService.kakaoUnlink();
   // }
 
   /**
@@ -142,13 +148,13 @@ export class AuthController {
   ): Promise<any> {
     const { id, email, nickname } = req.user;
 
-    const accessToken = await this.authService.createAccessToken(
+    const accessToken = await this._authService.createAccessToken(
       email,
       nickname,
       id,
       'naver',
     );
-    const refreshToken = await this.authService.createRefreshToken(
+    const refreshToken = await this._authService.createRefreshToken(
       email,
       nickname,
     );
@@ -172,7 +178,7 @@ export class AuthController {
 
   // @Get('naver/logout')
   // async naverLogout(): Promise<Result> {
-  //   return await this.authService.naverLogout();
+  //   return await this._authService.naverLogout();
   // }
 
   /**
@@ -193,13 +199,13 @@ export class AuthController {
   ): Promise<any> {
     const { id, email, nickname } = req.user;
 
-    const accessToken = await this.authService.createAccessToken(
+    const accessToken = await this._authService.createAccessToken(
       email,
       nickname,
       id,
       'google',
     );
-    const refreshToken = await this.authService.createRefreshToken(
+    const refreshToken = await this._authService.createRefreshToken(
       email,
       nickname,
     );
