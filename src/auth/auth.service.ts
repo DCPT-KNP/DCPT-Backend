@@ -127,7 +127,6 @@ export class AuthService {
         email,
       };
     } catch (e) {
-      console.log(e);
       throw new HttpException(e, 500);
     }
   }
