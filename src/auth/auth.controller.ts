@@ -134,25 +134,21 @@ export class AuthController {
    * naver strategy
    */
 
-  @UseGuards(NaverAuthGuard)
   @Get('naver')
-  async naverLogin() {
-    return;
-  }
-
-  @UseGuards(NaverAuthGuard)
-  @Get('naver/callback')
-  async naverCallback(
-    @Req() req,
+  async naverLogin(
+    @Query('code') code,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<any> {
-    const { id, email, nickname } = req.user;
+  ) {
+    const { access_token } = await this._authService.getNaverToken(code);
+    const { id, nickname, email } = await this._authService.getNaverUserInfo(
+      access_token,
+    );
 
     const accessToken = await this._authService.createAccessToken(
       email,
       nickname,
       id,
-      'naver',
+      SNSType.NAVER,
     );
     const refreshToken = await this._authService.createRefreshToken(
       email,
@@ -170,11 +166,51 @@ export class AuthController {
       message: '네이버 로그인 성공',
       response: {
         accessToken,
-        email,
-        nickname,
       },
     };
   }
+
+  // @UseGuards(NaverAuthGuard)
+  // @Get('naver')
+  // async naverLogin() {
+  //   return;
+  // }
+
+  // @UseGuards(NaverAuthGuard)
+  // @Get('naver/callback')
+  // async naverCallback(
+  //   @Req() req,
+  //   @Res({ passthrough: true }) res: Response,
+  // ): Promise<any> {
+  //   const { id, email, nickname } = req.user;
+
+  //   const accessToken = await this._authService.createAccessToken(
+  //     email,
+  //     nickname,
+  //     id,
+  //     'naver',
+  //   );
+  //   const refreshToken = await this._authService.createRefreshToken(
+  //     email,
+  //     nickname,
+  //   );
+
+  //   res.cookie('resfreshToken', refreshToken, {
+  //     maxAge: 1000 * 60 * 60 * 24 * 14,
+  //     sameSite: 'none',
+  //     httpOnly: true,
+  //   });
+
+  //   return {
+  //     success: true,
+  //     message: '네이버 로그인 성공',
+  //     response: {
+  //       accessToken,
+  //       email,
+  //       nickname,
+  //     },
+  //   };
+  // }
 
   // @Get('naver/logout')
   // async naverLogout(): Promise<Result> {

@@ -129,6 +129,65 @@ export class AuthService {
     }
   }
 
+  async getNaverToken(code) {
+    const param = {
+      grant_type: 'authorization_code',
+      client_id: NAVER_CLIENT_ID,
+      client_secret: NAVER_CLIENT_SECRET,
+      state: 'state',
+      code,
+    };
+
+    try {
+      const result = await Axios.post(
+        'https://nid.naver.com/oauth2.0/token',
+        qs.stringify(param),
+      );
+
+      return result.data;
+    } catch (e) {
+      throw new HttpException(e, 500);
+    }
+  }
+
+  async getNaverUserInfo(accessToken) {
+    try {
+      const userInfo = await Axios.get('https://openapi.naver.com/v1/nid/me', {
+        headers: {
+          Authorization: `bearer ${accessToken}`,
+        },
+      });
+
+      if (userInfo.data.resultcode !== '00') {
+        throw new HttpException(userInfo.data, userInfo.status);
+      }
+
+      const {
+        response: { id, email, name },
+      } = userInfo.data;
+
+      const result = await checkUser(
+        id,
+        email,
+        name,
+        SNSType.NAVER,
+        this._userservice,
+      );
+
+      if (!result.success) {
+        throw new HttpException(result, 500);
+      }
+
+      return {
+        id,
+        nickname: name,
+        email,
+      };
+    } catch (e) {
+      throw new HttpException(e.response.data, e.response.status);
+    }
+  }
+
   async kakaoLogout(accessToken: string): Promise<Result> {
     const _url = KAKAO_API_HOST + '/v1/user/logout';
     const _header = {
