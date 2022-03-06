@@ -27,6 +27,6 @@ export class UserController {
   async getUserAndJob(@Req() req) {
     const { user } = req.user;
 
-    return await this._userService.getUserAndJob(user);
+    return await this._userService.getAllUserInfo(user);
   }
 }

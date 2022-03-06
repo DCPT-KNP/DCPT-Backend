@@ -9,6 +9,7 @@ import { UserService } from 'src/user/user.service';
 import { Connection, Repository } from 'typeorm';
 import { CreateCareerModelDto } from './dto/create-career-model.dto';
 import skillList from '../static/skill_category.json';
+import { UpdateCareerModelDto } from './dto/update-career-model.dto';
 
 @Injectable()
 export class CareerModelService {
@@ -17,6 +18,8 @@ export class CareerModelService {
     private readonly _userService: UserService,
     @InjectRepository(User)
     private readonly _userRepository: Repository<User>,
+    @InjectRepository(CareerModel)
+    private readonly _careerModelRepository: Repository<CareerModel>,
   ) {}
 
   async createCareerModel(
@@ -93,6 +96,29 @@ export class CareerModelService {
       return {
         success: false,
         message: '커리어 모델 조회 실패',
+        response: null,
+        error: e,
+      };
+    }
+  }
+
+  async modifyRoadmapTitle(data: UpdateCareerModelDto): Promise<Result> {
+    try {
+      const result = await this._careerModelRepository.findOne(data.id);
+
+      result.title = data.title;
+
+      await this._careerModelRepository.save(result);
+
+      return {
+        success: true,
+        message: '로드맵 제목 수정 성공',
+        response: result,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: '로드맵 제목 수정 실패',
         response: null,
         error: e,
       };

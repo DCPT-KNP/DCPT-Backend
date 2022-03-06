@@ -194,10 +194,10 @@ export class UserService {
     }
   }
 
-  async getUserAndJob(user: User): Promise<Result> {
+  async getAllUserInfo(user: User): Promise<Result> {
     try {
       const result = await this._userRepository.findOne({
-        select: ['id', 'email', 'nickname', 'jobGroups'],
+        select: ['id', 'email', 'nickname', 'careerYear', 'jobGroups'],
         where: {
           id: user.id,
         },
@@ -206,13 +206,13 @@ export class UserService {
 
       return {
         success: true,
-        message: '유저와 직군 정보 조회 성공',
+        message: '유저 정보 조회 성공',
         response: result,
       };
     } catch (e) {
       return {
         success: false,
-        message: '유저와 직군 정보 조회 실패',
+        message: '유저 정보 조회 실패',
         response: null,
         error: e,
       };

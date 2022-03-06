@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -11,6 +12,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Result } from 'src/common/result.interface';
 import { CareerModelService } from './career-model.service';
 import { CreateCareerModelDto } from './dto/create-career-model.dto';
+import { UpdateCareerModelDto } from './dto/update-career-model.dto';
 
 @Controller('career-model')
 export class CareerModelController {
@@ -51,6 +53,14 @@ export class CareerModelController {
     const { user } = req.user;
 
     return await this._careerModelService.getCareerModel(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch()
+  async modifyRoadmapTitle(
+    @Body() data: UpdateCareerModelDto,
+  ): Promise<Result> {
+    return await this._careerModelService.modifyRoadmapTitle(data);
   }
 
   @Get('skill')
