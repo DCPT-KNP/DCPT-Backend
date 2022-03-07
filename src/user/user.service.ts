@@ -10,6 +10,8 @@ import { CreateCareerYearDto } from './dto/create-career-year.dto';
 import { CreateJobGroupDto } from './dto/create-job-group.dto';
 import { CreateSNSInfoDto } from './dto/create-sns-info.dto';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateCareerYearDto } from './dto/update-career-year.dto';
+import { UpdateJobGroupDto } from './dto/update-job-group.dto';
 
 @Injectable()
 export class UserService {
@@ -19,6 +21,8 @@ export class UserService {
     private readonly _userRepository: Repository<User>,
     @InjectRepository(SNSInfo)
     private readonly _snsInfoRepository: Repository<SNSInfo>,
+    @InjectRepository(JobGroup)
+    private readonly _jobGroupRepository: Repository<JobGroup>,
   ) {}
 
   async findOneUser(id: string, type: SNSType): Promise<Result> {
@@ -166,6 +170,29 @@ export class UserService {
     }
   }
 
+  async modifyJobGroup(data: UpdateJobGroupDto): Promise<Result> {
+    try {
+      const result = await this._jobGroupRepository.findOne(data.id);
+
+      result.name = data.name;
+
+      await this._jobGroupRepository.save(result);
+
+      return {
+        success: true,
+        message: '직군 수정 성공',
+        response: result,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: '직군 수정 실패',
+        response: null,
+        error: e,
+      };
+    }
+  }
+
   async addCareerYear(
     id: string,
     type: SNSType,
@@ -188,6 +215,30 @@ export class UserService {
       return {
         success: false,
         message: '연차 등록 실패',
+        response: null,
+        error: e,
+      };
+    }
+  }
+
+  async modifyCareerYear(
+    user: User,
+    data: UpdateCareerYearDto,
+  ): Promise<Result> {
+    try {
+      user.careerYear = data.career;
+
+      await this._userRepository.save(user);
+
+      return {
+        success: true,
+        message: '연차 수정 성공',
+        response: user,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: '연차 수정 실패',
         response: null,
         error: e,
       };

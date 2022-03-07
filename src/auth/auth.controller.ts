@@ -10,7 +10,6 @@ import {
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
-import { NaverAuthGuard } from './guards/naver-auth.guard';
 import { SNSType } from 'src/common/custom-type';
 
 @Controller('auth')
