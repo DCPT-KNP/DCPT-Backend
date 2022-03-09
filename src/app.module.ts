@@ -11,6 +11,7 @@ import {
 import { UserModule } from './user/user.module';
 import { CareerModelModule } from './career-model/career-model.module';
 import { SkillCardModule } from './skill-card/skill-card.module';
+import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { SkillCardModule } from './skill-card/skill-card.module';
     UserModule,
     CareerModelModule,
     SkillCardModule,
+    ImageModule,
   ],
 })
 export class AppModule {
