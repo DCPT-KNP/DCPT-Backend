@@ -1,8 +1,15 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import axios from 'axios';
 import {
   AES_KEY,
+  GOOGLE_CALLBACK,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_SECRET,
   JWT_SECRET,
   KAKAO_API_HOST,
   KAKAO_CLIENT_ID,
@@ -188,6 +195,70 @@ export class AuthService {
     }
   }
 
+  async getGoogleToken(code) {
+    const param = {
+      code: code,
+      client_id: GOOGLE_CLIENT_ID,
+      client_secret: GOOGLE_SECRET,
+      redirect_uri: GOOGLE_CALLBACK,
+      grant_type: 'authorization_code',
+    };
+
+    try {
+      const result = await Axios.post(
+        `https://oauth2.googleapis.com/token?` +
+        qs.stringify(param),
+      );
+
+      if (result.status === 400) {
+        throw new BadRequestException(result.data);
+      }
+
+      return result.data;
+    } catch (e) {
+      throw new HttpException(e, 500);
+    }
+  }
+
+  async getGoogleUserInfo(accessToken) {
+    try {
+      const userInfo = await Axios.get(
+        `https://www.googleapis.com/oauth2/v2/userinfo`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      if (userInfo.status === 401) {
+        throw new UnauthorizedException(userInfo.data);
+      }
+
+      const { id, email, name } = userInfo.data;
+
+      const result = await checkUser(
+        id,
+        email,
+        name,
+        SNSType.GOOGLE,
+        this._userservice,
+      );
+
+      if (!result.success) {
+        throw new HttpException(result, 500);
+      }
+
+      return {
+        id,
+        nickname: name,
+        email,
+      };
+    } catch (e) {
+      throw new HttpException(e.response.data, e.response.status);
+    }
+  }
+
   async kakaoLogout(accessToken: string): Promise<Result> {
     const _url = KAKAO_API_HOST + '/v1/user/logout';
     const _header = {
@@ -195,7 +266,7 @@ export class AuthService {
     };
 
     try {
-      const result = await axios.post(
+      const result = await Axios.post(
         _url,
         { withCredentials: true },
         { headers: _header },
@@ -223,7 +294,7 @@ export class AuthService {
     };
 
     try {
-      const result = await axios.post(
+      const result = await Axios.post(
         _url,
         { withCredentials: true },
         { headers: _header },
@@ -255,7 +326,7 @@ export class AuthService {
       `service_provider=NAVER`;
 
     try {
-      const result = await axios.post(_url);
+      const result = await Axios.post(_url);
 
       return {
         success: true,
