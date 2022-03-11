@@ -10,10 +10,10 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { CreateSkillCardDto } from 'src/skill-card/dto/create-skill-card.dto';
-import { UpdateStatusSkillCardDto } from 'src/skill-card/dto/update-status-skill-card.dto';
-import { Result } from 'src/common/result.interface';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CreateSkillCardDto } from '../skill-card/dto/create-skill-card.dto';
+import { UpdateStatusSkillCardDto } from '../skill-card/dto/update-status-skill-card.dto';
+import { Result } from '../common/result.interface';
 import { SkillCardService } from './skill-card.service';
 import { UpdateMissionDto } from './dto/update-mission.dto';
 import { CreateMissionDto } from './dto/create-mission.dto';

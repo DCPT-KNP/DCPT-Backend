@@ -6,9 +6,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Err } from 'src/common/error';
-import { User } from 'src/entities/user.entity';
-import { UserService } from 'src/user/user.service';
+import { Err } from '../../common/error';
+import { User } from '../../entities/user.entity';
+import { UserService } from '../../user/user.service';
 import { AuthService } from '../auth.service';
 
 @Injectable()

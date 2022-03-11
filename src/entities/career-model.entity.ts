@@ -1,4 +1,4 @@
-import { ShapeType, SkillType } from 'src/common/custom-type';
+import { ShapeType, SkillType } from '../common/custom-type';
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 

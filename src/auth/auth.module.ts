@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { JWT_SECRET } from 'src/common/config';
-import { UserModule } from 'src/user/user.module';
+import { UserModule } from '../user/user.module';
+import { JWT_SECRET } from '../common/config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { GoogleStrategy } from './strategies/google.strategy';

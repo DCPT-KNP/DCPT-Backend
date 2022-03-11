@@ -5,10 +5,10 @@ import {
   GOOGLE_CALLBACK,
   GOOGLE_CLIENT_ID,
   GOOGLE_SECRET,
-} from 'src/common/config';
-import { SNSType } from 'src/common/custom-type';
-import { checkUser } from 'src/common/utils';
-import { UserService } from 'src/user/user.service';
+} from '../../common/config';
+import { SNSType } from '../../common/custom-type';
+import { checkUser } from '../../common/utils';
+import { UserService } from '../../user/user.service';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {

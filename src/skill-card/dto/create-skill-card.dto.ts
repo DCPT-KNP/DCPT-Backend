@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional } from 'class-validator';
-import { SkillType } from 'src/common/custom-type';
+import { SkillType } from '../../common/custom-type';
 
 export class CreateSkillCardDto {
   @IsEnum(SkillType)

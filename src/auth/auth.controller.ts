@@ -1,7 +1,7 @@
 import { Controller, Get, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
-import { SNSType } from 'src/common/custom-type';
+import { SNSType } from '../common/custom-type';
 
 @Controller('auth')
 export class AuthController {

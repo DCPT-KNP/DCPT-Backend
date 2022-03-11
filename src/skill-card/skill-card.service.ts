@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateSkillCardDto } from 'src/skill-card/dto/create-skill-card.dto';
-import { CardStatusType } from 'src/common/custom-type';
-import { Result } from 'src/common/result.interface';
-import { createSkill } from 'src/common/utils';
-import { SkillCard } from 'src/entities/skill-card.entity';
-import { User } from 'src/entities/user.entity';
+import { CreateSkillCardDto } from '../skill-card/dto/create-skill-card.dto';
+import { CardStatusType } from '../common/custom-type';
+import { Result } from '../common/result.interface';
+import { createSkill } from '../common/utils';
+import { SkillCard } from '../entities/skill-card.entity';
+import { User } from '../entities/user.entity';
 import { Connection, Repository } from 'typeorm';
-import { Mission } from 'src/entities/mission.entity';
+import { Mission } from '../entities/mission.entity';
 
 @Injectable()
 export class SkillCardService {

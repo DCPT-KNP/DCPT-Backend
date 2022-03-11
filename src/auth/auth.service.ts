@@ -17,14 +17,14 @@ import {
   NAVER_CLIENT_ID,
   NAVER_CLIENT_SECRET,
   NAVER_HOST,
-} from 'src/common/config';
-import { Result } from 'src/common/result.interface';
+} from '../common/config';
+import { Result } from '../common/result.interface';
 import * as CryptoJS from 'crypto-js';
 import Axios from 'axios';
 import qs from 'qs';
-import { checkUser } from 'src/common/utils';
-import { SNSType } from 'src/common/custom-type';
-import { UserService } from 'src/user/user.service';
+import { checkUser } from '../common/utils';
+import { SNSType } from '../common/custom-type';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {

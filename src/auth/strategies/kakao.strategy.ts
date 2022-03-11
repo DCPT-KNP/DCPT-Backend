@@ -1,10 +1,10 @@
 import { Strategy, VerifyCallback } from 'passport-kakao';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { KAKAO_REDIRECT_URI, KAKAO_CLIENT_ID } from 'src/common/config';
-import { UserService } from 'src/user/user.service';
-import { checkUser } from 'src/common/utils';
-import { SNSType } from 'src/common/custom-type';
+import { KAKAO_REDIRECT_URI, KAKAO_CLIENT_ID } from '../../common/config';
+import { UserService } from '../../user/user.service';
+import { checkUser } from '../../common/utils';
+import { SNSType } from '../../common/custom-type';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {

@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { SkillCardService } from './skill-card.service';
 import { SkillCardController } from './skill-card.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SkillCard } from 'src/entities/skill-card.entity';
-import { User } from 'src/entities/user.entity';
-import { AuthModule } from 'src/auth/auth.module';
-import { UserModule } from 'src/user/user.module';
-import { Mission } from 'src/entities/mission.entity';
+import { SkillCard } from '../entities/skill-card.entity';
+import { User } from '../entities/user.entity';
+import { AuthModule } from '../auth/auth.module';
+import { UserModule } from '../user/user.module';
+import { Mission } from '../entities/mission.entity';
 
 @Module({
   imports: [

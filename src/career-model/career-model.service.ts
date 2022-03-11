@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SkillType, SNSType } from 'src/common/custom-type';
-import { Result } from 'src/common/result.interface';
-import { CareerModel } from 'src/entities/career-model.entity';
-import { OtherCategory } from 'src/entities/other-category.entity';
-import { User } from 'src/entities/user.entity';
-import { UserService } from 'src/user/user.service';
+import { SkillType, SNSType } from '../common/custom-type';
+import { Result } from '../common/result.interface';
+import { CareerModel } from '../entities/career-model.entity';
+import { OtherCategory } from '../entities/other-category.entity';
+import { User } from '../entities/user.entity';
+import { UserService } from '../user/user.service';
 import { Connection, Repository } from 'typeorm';
 import { CreateCareerModelDto } from './dto/create-career-model.dto';
 import skillList from '../static/skill_category.json';

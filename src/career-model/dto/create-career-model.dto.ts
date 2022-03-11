@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional } from 'class-validator';
-import { ShapeType, SkillType } from 'src/common/custom-type';
+import { ShapeType, SkillType } from '../../common/custom-type';
 
 export class CreateCareerModelDto {
   @IsEnum(ShapeType)

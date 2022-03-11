@@ -13,7 +13,7 @@ import {
   AWS_REGION,
   AWS_S3_BUCKET_NAME,
   AWS_SECRET_ACCESS_KEY,
-} from 'src/common/config';
+} from '../common/config';
 
 const s3 = new AWS.S3();
 AWS.config.update({

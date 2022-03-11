@@ -8,8 +8,8 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { Result } from 'src/common/result.interface';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Result } from '../common/result.interface';
 import { CareerModelService } from './career-model.service';
 import { CreateCareerModelDto } from './dto/create-career-model.dto';
 import { UpdateCareerModelDto } from './dto/update-career-model.dto';

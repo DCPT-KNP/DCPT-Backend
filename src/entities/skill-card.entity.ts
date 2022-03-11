@@ -1,4 +1,4 @@
-import { CardStatusType, SkillType } from 'src/common/custom-type';
+import { CardStatusType, SkillType } from '../common/custom-type';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import { Mission } from './mission.entity';
 import { User } from './user.entity';

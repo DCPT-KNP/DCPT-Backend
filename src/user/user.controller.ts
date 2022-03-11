@@ -7,7 +7,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateCareerYearDto } from './dto/create-career-year.dto';
 import { CreateJobGroupDto } from './dto/create-job-group.dto';
 import { UpdateCareerYearDto } from './dto/update-career-year.dto';
@@ -48,7 +48,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getUserAndJob(@Req() req) {
+  async getAllUserInfo(@Req() req) {
     const { user } = req.user;
 
     return await this._userService.getAllUserInfo(user);

@@ -1,12 +1,12 @@
-import { CreateSNSInfoDto } from 'src/user/dto/create-sns-info.dto';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { UserService } from 'src/user/user.service';
+import { CreateSNSInfoDto } from '../user/dto/create-sns-info.dto';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+import { UserService } from '../user/user.service';
 import { VerifyCallback } from 'passport-kakao';
 import { SkillType, SNSType } from './custom-type';
 import { v4 as uuidv4 } from 'uuid';
 import skillList from '../static/skill_category.json';
-import { User } from 'src/entities/user.entity';
-import { SkillCard } from 'src/entities/skill-card.entity';
+import { User } from '../entities/user.entity';
+import { SkillCard } from '../entities/skill-card.entity';
 
 export const checkUser = async (
   id: string,

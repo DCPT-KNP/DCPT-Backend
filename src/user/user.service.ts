@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SNSType } from 'src/common/custom-type';
-import { Result } from 'src/common/result.interface';
-import { JobGroup } from 'src/entities/job-group.entity';
-import { SNSInfo } from 'src/entities/sns-info.entity';
-import { User } from 'src/entities/user.entity';
+import { SNSType } from '../common/custom-type';
+import { Result } from '../common/result.interface';
+import { JobGroup } from '../entities/job-group.entity';
+import { SNSInfo } from '../entities/sns-info.entity';
+import { User } from '../entities/user.entity';
 import { Connection, Repository } from 'typeorm';
 import { CreateCareerYearDto } from './dto/create-career-year.dto';
 import { CreateJobGroupDto } from './dto/create-job-group.dto';

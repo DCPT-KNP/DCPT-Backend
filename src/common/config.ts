@@ -1,7 +1,20 @@
 import * as dotenv from 'dotenv';
 
+let path;
+
+switch (process.env.NODE_ENV) {
+  case 'dev':
+    path = '.env';
+    break;
+  case 'test':
+    path = '.env.test';
+    break;
+  default:
+    path = '.env.prod';
+}
+
 const envFound = dotenv.config({
-  path: process.env.NODE_ENV === 'dev' ? '.env' : '.env.prod',
+  path: path
 });
 
 if (envFound.error) {

@@ -1,10 +1,10 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from 'src/auth/auth.module';
-import { JobGroup } from 'src/entities/job-group.entity';
-import { SkillCard } from 'src/entities/skill-card.entity';
-import { SNSInfo } from 'src/entities/sns-info.entity';
-import { User } from 'src/entities/user.entity';
+import { AuthModule } from '../auth/auth.module';
+import { JobGroup } from '../entities/job-group.entity';
+import { SkillCard } from '../entities/skill-card.entity';
+import { SNSInfo } from '../entities/sns-info.entity';
+import { User } from '../entities/user.entity';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 

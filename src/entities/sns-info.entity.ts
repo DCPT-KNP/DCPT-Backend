@@ -1,4 +1,4 @@
-import { SNSType } from 'src/common/custom-type';
+import { SNSType } from '../common/custom-type';
 import {
   Column,
   CreateDateColumn,
