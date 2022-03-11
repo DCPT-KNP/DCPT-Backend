@@ -210,13 +210,9 @@ export class AuthService {
         qs.stringify(param),
       );
 
-      if (result.status === 400) {
-        throw new BadRequestException(result.data);
-      }
-
       return result.data;
     } catch (e) {
-      throw new HttpException(e, 500);
+      throw new HttpException(e.response.data, e.response.status);
     }
   }
 
