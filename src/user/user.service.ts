@@ -248,7 +248,7 @@ export class UserService {
   async getAllUserInfo(user: User): Promise<Result> {
     try {
       const result = await this._userRepository.findOne({
-        select: ['id', 'email', 'nickname', 'careerYear', 'jobGroups'],
+        select: ['id', 'email', 'nickname', 'image', 'careerYear', 'jobGroups'],
         where: {
           id: user.id,
         },

@@ -8,5 +8,8 @@ export class CreateUserDto {
   nickname: string;
 
   @IsString()
+  image: string;
+
+  @IsString()
   careerYear: string;
 }

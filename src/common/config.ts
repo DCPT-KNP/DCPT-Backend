@@ -14,11 +14,11 @@ switch (process.env.NODE_ENV) {
 }
 
 const envFound = dotenv.config({
-  path: path
+  path: path,
 });
 
 if (envFound.error) {
-  throw new Error("Couldn't find .env file");
+  throw new Error(`Couldn't find ${path} file`);
 }
 
 export const PORT = parseInt(process.env.PORT) || 5000;

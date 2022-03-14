@@ -1,12 +1,21 @@
 import { CreateSNSInfoDto } from '../user/dto/create-sns-info.dto';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserService } from '../user/user.service';
-import { VerifyCallback } from 'passport-kakao';
 import { SkillType, SNSType } from './custom-type';
 import { v4 as uuidv4 } from 'uuid';
 import skillList from '../static/skill_category.json';
 import { User } from '../entities/user.entity';
 import { SkillCard } from '../entities/skill-card.entity';
+import nicknameList from '../static/nickname.json';
+
+const nicknameGenerator = () => {
+  const { variables } = nicknameList;
+
+  const rndIdx = Math.floor(Math.random() * variables.length);
+  const result = variables[rndIdx].concat(' ', "너딩이");
+
+  return result;
+};
 
 export const checkUser = async (
   id: string,
@@ -14,14 +23,16 @@ export const checkUser = async (
   nickname: string,
   type: SNSType,
   _userService: UserService,
-  done?: VerifyCallback,
 ) => {
   const findUser = await _userService.findOneSNSInfo(id, type);
 
   if (findUser.success && findUser.response == null) {
+    const newNickname = nicknameGenerator();
+
     const newUser: CreateUserDto = {
       email: email,
-      nickname: nickname,
+      nickname: newNickname,
+      image: `https://~~/${newNickname}.png`,
       careerYear: null,
     };
     const newSNSInfo: CreateSNSInfoDto = {
@@ -38,10 +49,6 @@ export const checkUser = async (
         response: null,
         error: result.error,
       };
-      // done(null, false, {
-      //   message: result.message,
-      //   error: result.error,
-      // });
     }
   }
 

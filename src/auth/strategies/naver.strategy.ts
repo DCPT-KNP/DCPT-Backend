@@ -28,7 +28,7 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
   ): Promise<any> {
     const { email, nickname, id } = profile._json;
 
-    checkUser(id, email, nickname, SNSType.NAVER, this._userService, done);
+    checkUser(id, email, nickname, SNSType.NAVER, this._userService);
 
     const user = {
       email,

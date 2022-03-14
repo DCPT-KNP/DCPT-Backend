@@ -30,7 +30,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const { id } = profile;
     const { email, name } = profile._json;
 
-    checkUser(id, email, name, SNSType.GOOGLE, this._userService, done);
+    checkUser(id, email, name, SNSType.GOOGLE, this._userService);
 
     const user = {
       id,

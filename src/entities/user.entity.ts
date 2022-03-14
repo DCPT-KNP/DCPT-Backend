@@ -25,6 +25,9 @@ export class User {
   @Column()
   nickname: string;
 
+  @Column()
+  image: string;
+
   @Column({
     nullable: true,
   })
@@ -62,14 +65,20 @@ export class User {
   @OneToMany(() => JobGroup, (jobGroup) => jobGroup.user)
   jobGroups: JobGroup[];
 
-  constructor(email: string, nickname: string, careerYear: string | null) {
+  constructor(
+    email: string,
+    nickname: string,
+    image: string,
+    careerYear: string | null,
+  ) {
     this.email = email;
     this.nickname = nickname;
+    this.image = image;
     this.careerYear = careerYear;
   }
 
   static fromJson(json) {
-    return new User(json.email, json.nickname, json.careerYear);
+    return new User(json.email, json.nickname, json.image, json.careerYear);
   }
 
   addCareerModel(data) {

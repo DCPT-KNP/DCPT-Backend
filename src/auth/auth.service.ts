@@ -132,7 +132,7 @@ export class AuthService {
         email,
       };
     } catch (e) {
-      throw new HttpException(e, 500);
+      throw new HttpException(e.response.data, e.response.status);
     }
   }
 
@@ -206,8 +206,7 @@ export class AuthService {
 
     try {
       const result = await Axios.post(
-        `https://oauth2.googleapis.com/token?` +
-        qs.stringify(param),
+        `https://oauth2.googleapis.com/token?` + qs.stringify(param),
       );
 
       return result.data;

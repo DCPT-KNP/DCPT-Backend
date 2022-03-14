@@ -125,46 +125,4 @@ export class AuthController {
       },
     };
   }
-
-  // @UseGuards(GoogleAuthGuard)
-  // @Get('google')
-  // async googleLogin() {
-  //   return;
-  // }
-
-  // @UseGuards(GoogleAuthGuard)
-  // @Get('google/callback')
-  // async googleCallback(
-  //   @Req() req,
-  //   @Res({ passthrough: true }) res: Response,
-  // ): Promise<any> {
-  //   const { id, email, nickname } = req.user;
-
-  //   const accessToken = await this._authService.createAccessToken(
-  //     email,
-  //     nickname,
-  //     id,
-  //     'google',
-  //   );
-  //   const refreshToken = await this._authService.createRefreshToken(
-  //     email,
-  //     nickname,
-  //   );
-
-  //   res.cookie('resfreshToken', refreshToken, {
-  //     maxAge: 1000 * 60 * 60 * 24 * 14,
-  //     sameSite: 'none',
-  //     httpOnly: true,
-  //   });
-
-  //   return {
-  //     success: true,
-  //     message: '구글 로그인 성공',
-  //     response: {
-  //       accessToken,
-  //       email,
-  //       nickname,
-  //     },
-  //   };
-  // }
 }

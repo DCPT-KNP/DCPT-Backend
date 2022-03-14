@@ -27,7 +27,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     const { nickname } = info.profile;
     const { email } = info;
 
-    checkUser(id, email, nickname, SNSType.KAKAO, this._userService, done);
+    checkUser(id, email, nickname, SNSType.KAKAO, this._userService);
 
     const user = {
       id,
