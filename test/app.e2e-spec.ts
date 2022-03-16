@@ -2,10 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
-import { KAKAO_CLIENT_ID, KAKAO_REDIRECT_URI } from '../src/common/config';
+import { expect } from 'chai';
+import { AUTHORIZATION_CODE } from '../src/common/config';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
+  let accessToken = "";
 
   jest.setTimeout(60000);
 
@@ -27,34 +29,53 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  describe('test test', () => {
+  describe('my test', () => {
     it('test', () => {
       return request(app.getHttpServer()).get('/').expect(404);
     });
   });
 
   describe('auth', () => {
-    it('카카오 로그인', () => {
+    it('카카오 로그인 (잘못된 인가 코드)', () => {
       return request(app.getHttpServer())
         .get('/auth/kakao')
-        .query({ code: '4%2F0AX4XfWgX9vAYvv3gJrWCE7sDlzAqE8kXb9EYD3fcmj2xcuhxwP4h7BITamohjwn3n_CuxQ' })
+        .query({
+          code: 'wrong code',
+        })
         .expect(401);
     });
 
-    // it('구글 로그인', () => {
-    //   return request(app.getHttpServer())
-    //     .get('/auth/google')
-    //     .query({ code: '4%2F0AX4XfWgX9vAYvv3gJrWCE7sDlzAqE8kXb9EYD3fcmj2xcuhxwP4h7BITamohjwn3n_CuxQ' })
-    //     .expect(400);
-    // });
+    it('카카오 로그인 (옳은 인가 코드)', () => {
+      return request(app.getHttpServer())
+        .get('/auth/kakao')
+        .query({
+          code: AUTHORIZATION_CODE,
+        })
+        .expect(200)
+        .then(res => {
+          const { body } = res;
+          
+          console.log(body);
+
+          expect(body.success).to.equal(true);
+          expect(body.response).to.haveOwnProperty("accessToken");
+
+          accessToken = body.response.accessToken;
+        });
+    });
   });
 
-  // describe('user', () => {
-  //   it('모든 유저 정보 가져옴', () => {
-  //     return request(app.getHttpServer())
-  //       .get('/user')
-  //       .set('Authorization', `Bearer ${}`)
-  //       .expect(200);
-  //   })
-  // })
+  describe('user', () => {
+    it('get all user info', () => {
+      return request(app.getHttpServer())
+        .get('/user')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200)
+        .then(res => {
+          const { body } = res;
+
+          console.log(body);
+        })
+    });
+  });
 });

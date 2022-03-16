@@ -7,14 +7,15 @@ import skillList from '../static/skill_category.json';
 import { User } from '../entities/user.entity';
 import { SkillCard } from '../entities/skill-card.entity';
 import nicknameList from '../static/nickname.json';
+import { AWS_S3_HOST } from './config';
 
 const nicknameGenerator = () => {
   const { variables } = nicknameList;
 
   const rndIdx = Math.floor(Math.random() * variables.length);
-  const result = variables[rndIdx].concat(' ', "너딩이");
+  const newNickname = variables[rndIdx].concat(' ', '너딩이');
 
-  return result;
+  return { rndIdx, newNickname };
 };
 
 export const checkUser = async (
@@ -27,12 +28,12 @@ export const checkUser = async (
   const findUser = await _userService.findOneSNSInfo(id, type);
 
   if (findUser.success && findUser.response == null) {
-    const newNickname = nicknameGenerator();
+    const { rndIdx, newNickname } = nicknameGenerator();
 
     const newUser: CreateUserDto = {
       email: email,
       nickname: newNickname,
-      image: `https://~~/${newNickname}.png`,
+      image: `${AWS_S3_HOST}/${rndIdx + 1}.jpg`,
       careerYear: null,
     };
     const newSNSInfo: CreateSNSInfoDto = {

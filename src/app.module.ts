@@ -22,9 +22,12 @@ import { ImageModule } from './image/image.module';
       username: DB_USERNAME,
       password: DB_PASSWORD,
       database: DB_DATABASE,
-      entities: ['dist/**/*.entity{.ts,.js}'],
+      entities: [
+        'dist/**/*.entity{.ts,.js}',
+        process.env.NODE_ENV == 'test' ? 'src/entities/*.entity{.ts,.js}' : '',
+      ],
       synchronize: true,
-      keepConnectionAlive: true
+      keepConnectionAlive: true,
     }),
     AuthModule,
     UserModule,

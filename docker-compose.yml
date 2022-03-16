@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  proxy:
+    image: nginx:latest         # 최신 버전의 Nginx 사용
+    container_name: proxy       # container 이름은 proxy
+    ports: 
+      - "80:80"                 # 80번 포트를 host와 container 맵핑
+    volumes:
+      - ./conf/nginx.conf:/etc/nginx/nginx.conf   # nginx 설정 파일 volume 맵핑
+    restart: "unless-stopped"   # 내부에서 에러로 인해 container가 죽을 경우 restart
+
+  app:
+    build:
+      context: ./               # 빌드할 Dockerfile이 위치한 경로
+    env_file:
+      - .env.prod
+    container_name: app
+    expose:
+      - "3000"                  # 다른 컨테이너에게 3000번 포트 open
+    volumes:
+      - ./:/app                 # host <-> container의 source 디렉토리를 공유
+      - /app/node_modules
+    restart: "unless-stopped"

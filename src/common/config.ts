@@ -42,6 +42,7 @@ export const AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 export const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
 export const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 export const AWS_REGION = process.env.AWS_REGION;
+export const AWS_S3_HOST = process.env.AWS_S3_HOST;
 
 export const DB_HOST = process.env.DB_HOST;
 export const DB_USERNAME = process.env.DB_USERNAME;
@@ -52,3 +53,5 @@ export const KAKAO_API_HOST = 'https://kapi.kakao.com';
 export const KAKAO_AUTH_HOST = 'https://kauth.kakao.com';
 
 export const NAVER_HOST = 'https://nid.naver.com';
+
+export const AUTHORIZATION_CODE = process.env.AUTHORIZATION_CODE || '';
