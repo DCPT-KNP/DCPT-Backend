@@ -4,6 +4,26 @@ import { AppModule } from './app.module';
 import { PORT } from './common/config';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import cookieParser from 'cookie-parser';
+import * as dotenv from 'dotenv';
+
+let path;
+
+switch (process.env.NODE_ENV) {
+  case 'dev':
+    path = '.env';
+    break;
+  case 'test':
+    path = '.env.test';
+    break;
+  default:
+    path = '.env.prod';
+}
+
+const envFound = dotenv.config({ path: path });
+
+if (envFound.error) {
+  throw new Error(`Couldn't find ${path} file`);
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

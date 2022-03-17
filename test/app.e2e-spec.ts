@@ -7,7 +7,7 @@ import { AUTHORIZATION_CODE } from '../src/common/config';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-  let accessToken = "";
+  let accessToken = '';
 
   jest.setTimeout(60000);
 
@@ -52,13 +52,13 @@ describe('AppController (e2e)', () => {
           code: AUTHORIZATION_CODE,
         })
         .expect(200)
-        .then(res => {
+        .then((res) => {
           const { body } = res;
-          
+
           console.log(body);
 
           expect(body.success).to.equal(true);
-          expect(body.response).to.haveOwnProperty("accessToken");
+          expect(body.response).to.haveOwnProperty('accessToken');
 
           accessToken = body.response.accessToken;
         });
@@ -71,11 +71,11 @@ describe('AppController (e2e)', () => {
         .get('/user')
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200)
-        .then(res => {
+        .then((res) => {
           const { body } = res;
 
           console.log(body);
-        })
+        });
     });
   });
 });
