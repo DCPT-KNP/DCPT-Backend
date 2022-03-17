@@ -11,6 +11,7 @@ services:
     restart: "unless-stopped"   # 내부에서 에러로 인해 container가 죽을 경우 restart
 
   app:
+    image: jiho5993/nerdit
     build:
       context: ./               # 빌드할 Dockerfile이 위치한 경로
     env_file:
