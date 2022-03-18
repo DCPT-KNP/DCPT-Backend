@@ -1,13 +1,12 @@
 FROM node:16
 
-RUN mkdir /app
 WORKDIR /app
 
-COPY package*.json /app
+COPY package*.json .
 
 RUN npm install
 
-COPY . /app
+COPY . .
 
 ENV NODE_ENV=prod
 
