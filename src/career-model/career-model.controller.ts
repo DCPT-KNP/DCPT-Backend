@@ -34,9 +34,13 @@ export class CareerModelController {
       }
     }
 
-    if (data.otherTag.length < 1 || data.otherTag.length > 3) {
-      if (data.type === 'T' || data.type === 'PI') {
-        throw new BadRequestException('1~3개의 기타역량을 포함해야합니다.');
+    if (data.type === 'T' || data.type === 'PI') {
+      if (data.otherTag === undefined || data.otherTag.length === 0) {
+        throw new BadRequestException(
+          '기타 역량을 최소 1개 이상 선택해야 합니다.',
+        );
+      } else if (data.otherTag.length > 5) {
+        throw new BadRequestException('기타 역량의 갯수는 최대 5개입니다.');
       }
     }
 
