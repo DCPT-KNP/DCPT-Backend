@@ -12,4 +12,4 @@ ENV NODE_ENV=prod
 
 RUN npm run build
 
-CMD [ "node", "dist/main.js" ]
+CMD [ "node", "./dist/main.js" ]
