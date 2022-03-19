@@ -1,6 +1,23 @@
 import * as dotenv from 'dotenv';
 
-dotenv.config();
+let path;
+
+switch (process.env.NODE_ENV) {
+  case 'dev':
+    path = '.env';
+    break;
+  case 'test':
+    path = '.env.test';
+    break;
+  default:
+    path = '.env.prod';
+}
+
+const envFound = dotenv.config({ path: path });
+
+if (envFound.error) {
+  throw new Error(`Couldn't find ${path} file`);
+}
 
 export const PORT = parseInt(process.env.PORT) || 5000;
 
