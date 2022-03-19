@@ -1,8 +1,8 @@
-FROM node:16
+FROM node:16-alpine
 
 WORKDIR /app
 
-COPY package*.json .
+COPY package*.json ./
 
 RUN npm install
 
@@ -12,4 +12,4 @@ ENV NODE_ENV=prod
 
 RUN npm run build
 
-CMD [ "node", "./dist/main.js" ]
+CMD [ "node", "dist/main.js" ]
