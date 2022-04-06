@@ -25,3 +25,8 @@ export enum CardStatusType {
   IN_PROGRESS = 'In Progress',
   DONE = 'Done',
 }
+
+export interface DuplicateCard {
+  uuid: string;
+  title: string;
+}

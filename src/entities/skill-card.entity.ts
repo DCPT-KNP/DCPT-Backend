@@ -1,18 +1,13 @@
-import { CardStatusType, SkillType } from '../common/custom-type';
+import { CardStatusType } from '../common/custom-type';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import { Mission } from './mission.entity';
 import { User } from './user.entity';
+import { SkillTags } from './skill-tags.entity';
 
 @Entity({ name: 'skill_cards' })
 export class SkillCard {
   @PrimaryColumn({ type: 'uuid' })
   uuid: string;
-
-  @Column({
-    type: 'enum',
-    enum: SkillType,
-  })
-  tag: SkillType;
 
   @Column()
   title: string;
@@ -43,16 +38,17 @@ export class SkillCard {
   @OneToMany(() => Mission, (mission) => mission.skillCard)
   missions: Mission[];
 
+  @OneToMany(() => SkillTags, (skillTags) => skillTags.skillCard)
+  skillTags: SkillTags[];
+
   constructor(
     uuid: string,
-    tag: SkillType,
     title: string,
     description: string,
     tip: string,
     user: User,
   ) {
     this.uuid = uuid;
-    this.tag = tag;
     this.title = title;
     this.description = description;
     this.tip = tip;

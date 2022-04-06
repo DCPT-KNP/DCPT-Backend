@@ -1,13 +1,14 @@
 import { CreateSNSInfoDto } from '../user/dto/create-sns-info.dto';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserService } from '../user/user.service';
-import { SkillType, SNSType } from './custom-type';
+import { DuplicateCard, SkillType, SNSType } from './custom-type';
 import { v4 as uuidv4 } from 'uuid';
 import skillList from '../static/skill_category.json';
 import { User } from '../entities/user.entity';
 import { SkillCard } from '../entities/skill-card.entity';
 import nicknameList from '../static/nickname.json';
 import { AWS_S3_HOST } from './config';
+import { SkillTags } from 'src/entities/skill-tags.entity';
 
 const nicknameGenerator = () => {
   const { variables } = nicknameList;
@@ -58,38 +59,94 @@ export const checkUser = async (
   };
 };
 
+const checkDuplicateCard = (
+  itemTitle: string,
+  duplicateCardList: DuplicateCard[],
+) => {
+  duplicateCardList.forEach((card, idx) => {
+    if (card.title === itemTitle) {
+      return {
+        flag: true,
+        idx,
+      };
+    }
+  });
+
+  return {
+    flag: false,
+    idx: -1,
+  };
+};
+
 export const createSkill = (
   queryRunner: any,
   tag: SkillType,
   user: User,
   isPrimaryOrSecondary: boolean,
+  duplicateCardList: DuplicateCard[],
+  _skillCardRepository: any,
 ) => {
   return new Promise(async (resolve, reject) => {
     const info = skillList[tag];
+
     const newDefaultSkill = new SkillCard(
       uuidv4(),
-      tag,
       info.default.title,
       info.default.description,
       info.default.tip,
       user,
     );
+    const newDefaultTag = new SkillTags(tag, newDefaultSkill);
+
     await queryRunner.manager.save(SkillCard, newDefaultSkill);
+    await queryRunner.manager.save(SkillTags, newDefaultTag);
 
     if (isPrimaryOrSecondary) {
       info.other.forEach(async (item) => {
-        const newOtherSkill = new SkillCard(
-          uuidv4(),
-          tag,
-          item.title,
-          item.description,
-          item.tip,
-          user,
-        );
-        await queryRunner.manager.save(SkillCard, newOtherSkill);
+        const check = checkDuplicateCard(item.title, duplicateCardList);
+
+        if (check.flag === true) {
+          // duplicate
+          /**
+           * TODO: fill the code to add tag by refering to uuid of skill card
+           *
+           * Use hint
+           * duplicateCardList[check.idx].uuid
+           * _skillCardRepository.findOne -> uuid
+           *
+           * ERROR: Why query runner already release?
+           */
+          const otherSkill = await _skillCardRepository.findOne({
+            where: {
+              uuid: duplicateCardList[check.idx].uuid,
+            },
+          });
+          const newTag = new SkillTags(tag, otherSkill);
+
+          await queryRunner.manager.save(SkillTags, newTag);
+        } else {
+          // not duplicate
+          const uuid = uuidv4();
+          const newOtherSkill = new SkillCard(
+            uuid,
+            item.title,
+            item.description,
+            item.tip,
+            user,
+          );
+          const newTag = new SkillTags(tag, newOtherSkill);
+
+          await queryRunner.manager.save(SkillCard, newOtherSkill);
+          await queryRunner.manager.save(SkillTags, newTag);
+
+          duplicateCardList.push({
+            uuid: uuid,
+            title: item.title,
+          });
+        }
       });
     }
 
-    resolve(true);
+    resolve(duplicateCardList);
   });
 };

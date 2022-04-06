@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateSkillCardDto } from '../skill-card/dto/create-skill-card.dto';
-import { CardStatusType } from '../common/custom-type';
+import { CardStatusType, DuplicateCard } from '../common/custom-type';
 import { Result } from '../common/result.interface';
 import { createSkill } from '../common/utils';
 import { SkillCard } from '../entities/skill-card.entity';
@@ -22,6 +22,7 @@ export class SkillCardService {
   ) {}
 
   async createSkillCard(user: User, data: CreateSkillCardDto): Promise<Result> {
+    const duplicateCardList: DuplicateCard[] = [];
     const queryRunner = this.connection.createQueryRunner();
 
     await queryRunner.connect();
@@ -29,17 +30,47 @@ export class SkillCardService {
 
     try {
       // primary skill 추가
-      await createSkill(queryRunner, data.primaryTag, user, true);
+      createSkill(
+        queryRunner,
+        data.primaryTag,
+        user,
+        true,
+        duplicateCardList,
+        this._skillCardRepository,
+      ).then((cardList: DuplicateCard[]) => {
+        duplicateCardList.push(...cardList);
+      });
+
+      /**
+       * print log
+       */
+      for (let i=0; i<duplicateCardList.length; i++) {
+        console.log(duplicateCardList[i]);
+      }
 
       // secondary skill 추가
       if (data.secondaryTag !== undefined) {
-        await createSkill(queryRunner, data.secondaryTag, user, true);
+        await createSkill(
+          queryRunner,
+          data.secondaryTag,
+          user,
+          true,
+          duplicateCardList,
+          this._skillCardRepository,
+        );
       }
 
       // other skill 추가
       if (data.otherTag !== undefined) {
         data.otherTag.forEach(async (item) => {
-          await createSkill(queryRunner, item, user, false);
+          await createSkill(
+            queryRunner,
+            item,
+            user,
+            false,
+            duplicateCardList,
+            this._skillCardRepository,
+          );
         });
       }
 
@@ -66,6 +97,9 @@ export class SkillCardService {
 
   async getSkillCard(user: User): Promise<Result> {
     try {
+      /**
+       * TODO: Fix the code to find SkillTags
+       */
       const result = await this._userRepository.findOne({
         select: ['id', 'email', 'nickname', 'skillCards'],
         where: {
@@ -190,8 +224,11 @@ export class SkillCardService {
 
   async getMissionList(uuid: string): Promise<Result> {
     try {
+      /**
+       * TODO: Fix the code to find SkillTags
+       */
       const result = await this._skillCardRepository.findOne({
-        select: ['uuid', 'tag', 'title', 'missions'],
+        select: ['uuid', 'title', 'missions'],
         where: {
           uuid,
         },
