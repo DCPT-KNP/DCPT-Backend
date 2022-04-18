@@ -107,23 +107,14 @@ export const createSkill = (
 
         if (check.flag === true) {
           // duplicate
-          /**
-           * TODO: fill the code to add tag by refering to uuid of skill card
-           *
-           * Use hint
-           * for ... of ...
-           * duplicateCardList[check.idx].uuid
-           * _skillCardRepository.findOne -> uuid
-           *
-           * ERROR: Why not fill the uuid?
-           */
-          const otherSkill = await _skillCardRepository.findOne({
-            where: {
-              uuid: duplicateCardList[check.idx].uuid,
-            },
-          });
+          const otherSkill = new SkillCard(
+            duplicateCardList[check.idx].uuid,
+            item.title,
+            item.description,
+            item.tip,
+            user,
+          );
           const newTag = new SkillTags(tag, otherSkill);
-          console.log(newTag);
 
           await queryRunner.manager.save(SkillTags, newTag);
         } else {
@@ -147,50 +138,6 @@ export const createSkill = (
           });
         }
       }
-
-      // info.other.forEach(async (item) => {
-      //   const check = checkDuplicateCard(item.title, duplicateCardList);
-
-      //   if (check.flag === true) {
-      //     // duplicate
-      //     /**
-      //      * TODO: fill the code to add tag by refering to uuid of skill card
-      //      *
-      //      * Use hint
-      //      * duplicateCardList[check.idx].uuid
-      //      * _skillCardRepository.findOne -> uuid
-      //      *
-      //      * ERROR: Why query runner already release?
-      //      */
-      //     const otherSkill = await _skillCardRepository.findOne({
-      //       where: {
-      //         uuid: duplicateCardList[check.idx].uuid,
-      //       },
-      //     });
-      //     const newTag = new SkillTags(tag, otherSkill);
-
-      //     await queryRunner.manager.save(SkillTags, newTag);
-      //   } else {
-      //     // not duplicate
-      //     const uuid = uuidv4();
-      //     const newOtherSkill = new SkillCard(
-      //       uuid,
-      //       item.title,
-      //       item.description,
-      //       item.tip,
-      //       user,
-      //     );
-      //     const newTag = new SkillTags(tag, newOtherSkill);
-
-      //     await queryRunner.manager.save(SkillCard, newOtherSkill);
-      //     await queryRunner.manager.save(SkillTags, newTag);
-
-      //     duplicateCardList.push({
-      //       uuid: uuid,
-      //       title: item.title,
-      //     });
-      //   }
-      // });
     }
 
     resolve(duplicateCardList);

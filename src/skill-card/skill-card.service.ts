@@ -39,14 +39,6 @@ export class SkillCardService {
         this._skillCardRepository,
       );
 
-      /**
-       * print log
-       */
-      console.log('============================ Primary Skill..');
-      for (const duplicateCard of duplicateCardList) {
-        console.log(duplicateCard);
-      }
-
       // secondary skill 추가
       if (data.secondaryTag !== undefined) {
         await createSkill(
@@ -57,14 +49,6 @@ export class SkillCardService {
           duplicateCardList,
           this._skillCardRepository,
         );
-      }
-
-      /**
-       * print log
-       */
-      console.log('============================ Secondary Skill..');
-      for (const duplicateCard of duplicateCardList) {
-        console.log(duplicateCard);
       }
 
       // other skill 추가
