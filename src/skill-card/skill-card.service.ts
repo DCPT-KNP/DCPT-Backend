@@ -30,22 +30,21 @@ export class SkillCardService {
 
     try {
       // primary skill 추가
-      createSkill(
+      await createSkill(
         queryRunner,
         data.primaryTag,
         user,
         true,
         duplicateCardList,
         this._skillCardRepository,
-      ).then((cardList: DuplicateCard[]) => {
-        duplicateCardList.push(...cardList);
-      });
+      );
 
       /**
        * print log
        */
-      for (let i=0; i<duplicateCardList.length; i++) {
-        console.log(duplicateCardList[i]);
+      console.log('============================ Primary Skill..');
+      for (const duplicateCard of duplicateCardList) {
+        console.log(duplicateCard);
       }
 
       // secondary skill 추가
@@ -60,9 +59,17 @@ export class SkillCardService {
         );
       }
 
+      /**
+       * print log
+       */
+      console.log('============================ Secondary Skill..');
+      for (const duplicateCard of duplicateCardList) {
+        console.log(duplicateCard);
+      }
+
       // other skill 추가
       if (data.otherTag !== undefined) {
-        data.otherTag.forEach(async (item) => {
+        for (const item of data.otherTag) {
           await createSkill(
             queryRunner,
             item,
@@ -71,7 +78,7 @@ export class SkillCardService {
             duplicateCardList,
             this._skillCardRepository,
           );
-        });
+        }
       }
 
       await queryRunner.commitTransaction();

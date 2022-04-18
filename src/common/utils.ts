@@ -63,14 +63,14 @@ const checkDuplicateCard = (
   itemTitle: string,
   duplicateCardList: DuplicateCard[],
 ) => {
-  duplicateCardList.forEach((card, idx) => {
-    if (card.title === itemTitle) {
+  for (let i = 0; i < duplicateCardList.length; i++) {
+    if (duplicateCardList[i].title === itemTitle) {
       return {
         flag: true,
-        idx,
+        idx: i,
       };
     }
-  });
+  }
 
   return {
     flag: false,
@@ -102,7 +102,7 @@ export const createSkill = (
     await queryRunner.manager.save(SkillTags, newDefaultTag);
 
     if (isPrimaryOrSecondary) {
-      info.other.forEach(async (item) => {
+      for (const item of info.other) {
         const check = checkDuplicateCard(item.title, duplicateCardList);
 
         if (check.flag === true) {
@@ -111,10 +111,11 @@ export const createSkill = (
            * TODO: fill the code to add tag by refering to uuid of skill card
            *
            * Use hint
+           * for ... of ...
            * duplicateCardList[check.idx].uuid
            * _skillCardRepository.findOne -> uuid
            *
-           * ERROR: Why query runner already release?
+           * ERROR: Why not fill the uuid?
            */
           const otherSkill = await _skillCardRepository.findOne({
             where: {
@@ -122,6 +123,7 @@ export const createSkill = (
             },
           });
           const newTag = new SkillTags(tag, otherSkill);
+          console.log(newTag);
 
           await queryRunner.manager.save(SkillTags, newTag);
         } else {
@@ -144,7 +146,51 @@ export const createSkill = (
             title: item.title,
           });
         }
-      });
+      }
+
+      // info.other.forEach(async (item) => {
+      //   const check = checkDuplicateCard(item.title, duplicateCardList);
+
+      //   if (check.flag === true) {
+      //     // duplicate
+      //     /**
+      //      * TODO: fill the code to add tag by refering to uuid of skill card
+      //      *
+      //      * Use hint
+      //      * duplicateCardList[check.idx].uuid
+      //      * _skillCardRepository.findOne -> uuid
+      //      *
+      //      * ERROR: Why query runner already release?
+      //      */
+      //     const otherSkill = await _skillCardRepository.findOne({
+      //       where: {
+      //         uuid: duplicateCardList[check.idx].uuid,
+      //       },
+      //     });
+      //     const newTag = new SkillTags(tag, otherSkill);
+
+      //     await queryRunner.manager.save(SkillTags, newTag);
+      //   } else {
+      //     // not duplicate
+      //     const uuid = uuidv4();
+      //     const newOtherSkill = new SkillCard(
+      //       uuid,
+      //       item.title,
+      //       item.description,
+      //       item.tip,
+      //       user,
+      //     );
+      //     const newTag = new SkillTags(tag, newOtherSkill);
+
+      //     await queryRunner.manager.save(SkillCard, newOtherSkill);
+      //     await queryRunner.manager.save(SkillTags, newTag);
+
+      //     duplicateCardList.push({
+      //       uuid: uuid,
+      //       title: item.title,
+      //     });
+      //   }
+      // });
     }
 
     resolve(duplicateCardList);
