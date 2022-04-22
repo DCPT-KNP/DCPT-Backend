@@ -31,6 +31,7 @@ import { ImageModule } from './image/image.module';
        * 따라서 prod에서는 migration해준다.
        */
       synchronize: process.env.NODE_ENV !== 'prod',
+      logging: process.env.NODE_ENV !== 'prod' ? ['query'] : [],
       keepConnectionAlive: true,
     }),
     AuthModule,

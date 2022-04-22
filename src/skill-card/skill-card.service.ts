@@ -6,7 +6,7 @@ import { Result } from '../common/result.interface';
 import { createSkill } from '../common/utils';
 import { SkillCard } from '../entities/skill-card.entity';
 import { User } from '../entities/user.entity';
-import { Connection, Repository } from 'typeorm';
+import { Connection, Repository, getManager } from 'typeorm';
 import { Mission } from '../entities/mission.entity';
 
 @Injectable()
@@ -87,17 +87,39 @@ export class SkillCardService {
   }
 
   async getSkillCard(user: User): Promise<Result> {
+    const entityManager = getManager();
+
     try {
       /**
        * TODO: Fix the code to find SkillTags
+       * 매우 임시적인 쿼리
+       * 추후 queryBuilder로 해결해야함
        */
-      const result = await this._userRepository.findOne({
-        select: ['id', 'email', 'nickname', 'skillCards'],
-        where: {
-          id: user.id,
-        },
-        relations: ['skillCards'],
-      });
+      const result = await entityManager.query(
+        `SELECT \
+          * \
+        FROM \
+          \`skill_tags\` \`SkillTags\` \
+          INNER JOIN ( \
+            SELECT \
+              \`User\`.\`id\` AS \`User_id\`, \
+              \`User\`.\`email\` AS \`User_email\`, \
+              \`User\`.\`nickname\` AS \`User_nickname\`, \
+              \`User__skillCards\`.\`uuid\` AS \`User__skillCards_uuid\`, \
+              \`User__skillCards\`.\`title\` AS \`User__skillCards_title\`, \
+              \`User__skillCards\`.\`description\` AS \`User__skillCards_description\`, \
+              \`User__skillCards\`.\`tip\` AS \`User__skillCards_tip\`, \
+              \`User__skillCards\`.\`status\` AS \`User__skillCards_status\`, \
+              \`User__skillCards\`.\`userId\` AS \`User__skillCards_userId\` \
+            FROM \
+              \`users\` \`User\` \
+              LEFT JOIN \`skill_cards\` \`User__skillCards\` ON \`User__skillCards\`.\`userId\` = \`User\`.\`id\` \
+            WHERE \
+              (\`User\`.\`id\` = ${user.id}) \
+              AND ( \
+                \`User\`.\`id\` IN (${user.id}) \
+              )) \`inline_view\` ON \`SkillTags\`.\`skillCardUuid\` = \`inline_view\`.\`User__skillCards_uuid\``
+      );
 
       return {
         success: true,
