@@ -95,41 +95,52 @@ export class SkillCardService {
     try {
       /**
        * FIXME: Fix the code to find SkillTags
-       * querybuilder로 해결했으면 좋겠음
+       * querybuilder로 해결했으면 좋겠음 (완)
+       * 태그가 겹치는 카드를 하나로 묶었으면 함
        */
-      const result = await entityManager.query(
-        `SELECT \
-          User_email AS email, \
-          User_nickname AS nickname, \
-          User_id AS id, \
-          User__skillCards_uuid AS skillCard_uuid, \
-          tag AS skillCard_tag, \
-          User__skillCards_title AS skillCard_title, \
-          User__skillCards_description AS skillCard_description, \
-          User__skillCards_tip AS skillCard_tip, \
-          User__skillCards_status AS skillCard_status
-        FROM \
-          skill_tags SkillTags \
-          INNER JOIN ( \
-            SELECT \
-              User.id AS User_id, \
-              User.email AS User_email, \
-              User.nickname AS User_nickname, \
-              User__skillCards.uuid AS User__skillCards_uuid, \
-              User__skillCards.title AS User__skillCards_title, \
-              User__skillCards.description AS User__skillCards_description, \
-              User__skillCards.tip AS User__skillCards_tip, \
-              User__skillCards.status AS User__skillCards_status, \
-              User__skillCards.userId AS User__skillCards_userId \
-            FROM \
-              users User \
-              LEFT JOIN skill_cards User__skillCards ON User__skillCards.userId = User.id \
-            WHERE \
-              (User.id = ${user.id}) \
-              AND ( \
-                User.id IN (${user.id}) \
-              )) inline_view ON SkillTags.skillCardUuid = inline_view.User__skillCards_uuid`
-      );
+      const total_skillCards = await entityManager
+        .createQueryBuilder()
+        .select([
+          'User.id AS User_id',
+          'User.email AS User_email',
+          'User.nickname AS User_nickname',
+          'User__skillCards.uuid AS User__skillCards_uuid',
+          'User__skillCards.title AS User__skillCards_title',
+          'User__skillCards.description AS User__skillCards_description',
+          'User__skillCards.tip AS User__skillCards_tip',
+          'User__skillCards.status AS User__skillCards_status',
+          'User__skillCards.userId AS User__skillCards_userId',
+        ])
+        .from(User, 'User')
+        .leftJoin(
+          SkillCard,
+          'User__skillCards',
+          'User__skillCards.userId = User.id',
+        )
+        .where('User.id = :userId', { userId: user.id })
+        .andWhere('User.id IN (:userId)', { userId: user.id });
+
+      const result = await entityManager
+        .createQueryBuilder()
+        .select([
+          'User_email AS email',
+          'User_nickname AS nickname',
+          'User_id AS id',
+          'User__skillCards_uuid AS skillCard_uuid',
+          'tag AS skillCard_tag',
+          'User__skillCards_title AS skillCard_title',
+          'User__skillCards_description AS skillCard_description',
+          'User__skillCards_tip AS skillCard_tip',
+          'User__skillCards_status AS skillCard_status',
+        ])
+        .from(SkillTags, 'skillTags')
+        .innerJoin(
+          '(' + total_skillCards.getQuery() + ')',
+          'total_skillCards',
+          'SkillTags.skillCardUuid = total_skillCards.User__skillCards_uuid',
+        )
+        .setParameters(total_skillCards.getParameters())
+        .getRawMany();
 
       return {
         success: true,
@@ -279,7 +290,7 @@ export class SkillCardService {
               (SkillCard.uuid = "${uuid}") \
               AND ( \
                 SkillCard.uuid IN ("${uuid}") \
-              )) inline_view ON SkillTags.skillCardUuid = inline_view.SkillCard_uuid`
+              )) inline_view ON SkillTags.skillCardUuid = inline_view.SkillCard_uuid`,
       );
 
       return {
