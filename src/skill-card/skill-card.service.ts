@@ -8,6 +8,7 @@ import { SkillCard } from '../entities/skill-card.entity';
 import { User } from '../entities/user.entity';
 import { Connection, Repository, getManager } from 'typeorm';
 import { Mission } from '../entities/mission.entity';
+import { SkillTags } from 'src/entities/skill-tags.entity';
 
 @Injectable()
 export class SkillCardService {
@@ -17,6 +18,8 @@ export class SkillCardService {
     private readonly _userRepository: Repository<User>,
     @InjectRepository(SkillCard)
     private readonly _skillCardRepository: Repository<SkillCard>,
+    // @InjectRepository(SkillTags)
+    // private readonly _skillTagsRepository: Repository<SkillTags>,
     @InjectRepository(Mission)
     private readonly _missionRepository: Repository<Mission>,
   ) {}
@@ -91,34 +94,41 @@ export class SkillCardService {
 
     try {
       /**
-       * TODO: Fix the code to find SkillTags
-       * 매우 임시적인 쿼리
-       * 추후 queryBuilder로 해결해야함
+       * FIXME: Fix the code to find SkillTags
+       * querybuilder로 해결했으면 좋겠음
        */
       const result = await entityManager.query(
         `SELECT \
-          * \
+          User_email AS email, \
+          User_nickname AS nickname, \
+          User_id AS id, \
+          User__skillCards_uuid AS skillCard_uuid, \
+          tag AS skillCard_tag, \
+          User__skillCards_title AS skillCard_title, \
+          User__skillCards_description AS skillCard_description, \
+          User__skillCards_tip AS skillCard_tip, \
+          User__skillCards_status AS skillCard_status
         FROM \
-          \`skill_tags\` \`SkillTags\` \
+          skill_tags SkillTags \
           INNER JOIN ( \
             SELECT \
-              \`User\`.\`id\` AS \`User_id\`, \
-              \`User\`.\`email\` AS \`User_email\`, \
-              \`User\`.\`nickname\` AS \`User_nickname\`, \
-              \`User__skillCards\`.\`uuid\` AS \`User__skillCards_uuid\`, \
-              \`User__skillCards\`.\`title\` AS \`User__skillCards_title\`, \
-              \`User__skillCards\`.\`description\` AS \`User__skillCards_description\`, \
-              \`User__skillCards\`.\`tip\` AS \`User__skillCards_tip\`, \
-              \`User__skillCards\`.\`status\` AS \`User__skillCards_status\`, \
-              \`User__skillCards\`.\`userId\` AS \`User__skillCards_userId\` \
+              User.id AS User_id, \
+              User.email AS User_email, \
+              User.nickname AS User_nickname, \
+              User__skillCards.uuid AS User__skillCards_uuid, \
+              User__skillCards.title AS User__skillCards_title, \
+              User__skillCards.description AS User__skillCards_description, \
+              User__skillCards.tip AS User__skillCards_tip, \
+              User__skillCards.status AS User__skillCards_status, \
+              User__skillCards.userId AS User__skillCards_userId \
             FROM \
-              \`users\` \`User\` \
-              LEFT JOIN \`skill_cards\` \`User__skillCards\` ON \`User__skillCards\`.\`userId\` = \`User\`.\`id\` \
+              users User \
+              LEFT JOIN skill_cards User__skillCards ON User__skillCards.userId = User.id \
             WHERE \
-              (\`User\`.\`id\` = ${user.id}) \
+              (User.id = ${user.id}) \
               AND ( \
-                \`User\`.\`id\` IN (${user.id}) \
-              )) \`inline_view\` ON \`SkillTags\`.\`skillCardUuid\` = \`inline_view\`.\`User__skillCards_uuid\``
+                User.id IN (${user.id}) \
+              )) inline_view ON SkillTags.skillCardUuid = inline_view.User__skillCards_uuid`
       );
 
       return {
@@ -236,17 +246,41 @@ export class SkillCardService {
   }
 
   async getMissionList(uuid: string): Promise<Result> {
+    const entityManager = getManager();
+
     try {
       /**
-       * TODO: Fix the code to find SkillTags
+       * FIXME: Fix the code to find SkillTags
+       * querybuilder로 해결했으면 좋겠음
        */
-      const result = await this._skillCardRepository.findOne({
-        select: ['uuid', 'title', 'missions'],
-        where: {
-          uuid,
-        },
-        relations: ['missions'],
-      });
+
+      const result = await entityManager.query(
+        `SELECT \
+          SkillCard_uuid AS uuid, \
+          tag, \
+          SkillCard_title AS title, \
+          SkillCard__missions_id AS mission_id, \
+          SkillCard__missions_missionTitle AS mission_title, \
+          SkillCard__missions_done AS mission_done \
+        FROM \
+          skill_tags SkillTags \
+          INNER JOIN ( \
+            SELECT \
+              SkillCard.uuid AS SkillCard_uuid, \
+              SkillCard.title AS SkillCard_title, \
+              SkillCard__missions.id AS SkillCard__missions_id, \
+              SkillCard__missions.missionTitle AS SkillCard__missions_missionTitle, \
+              SkillCard__missions.done AS SkillCard__missions_done, \
+              SkillCard__missions.skillCardUuid AS SkillCard__missions_skillCardUuid \
+            FROM \
+              skill_cards SkillCard \
+              LEFT JOIN missions SkillCard__missions ON SkillCard__missions.skillCardUuid = SkillCard.uuid \
+            WHERE \
+              (SkillCard.uuid = "${uuid}") \
+              AND ( \
+                SkillCard.uuid IN ("${uuid}") \
+              )) inline_view ON SkillTags.skillCardUuid = inline_view.SkillCard_uuid`
+      );
 
       return {
         success: true,
