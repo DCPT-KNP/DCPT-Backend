@@ -142,10 +142,25 @@ export class SkillCardService {
         .setParameters(total_skillCards.getParameters())
         .getRawMany();
 
+      const filtered_result = result.reduce((acc, cur) => {
+        const idx = acc.findIndex(({ skillCard_uuid }) => {
+          return skillCard_uuid === cur.skillCard_uuid;
+        });
+
+        if (idx === -1) {
+          cur.skillCard_tag = [ cur.skillCard_tag ];
+          acc.push(cur);
+        } else {
+          acc[idx].skillCard_tag.push(cur.skillCard_tag);
+        }
+
+        return acc;
+      }, []);
+
       return {
         success: true,
         message: '스킬 카드 조회 성공',
-        response: result,
+        response: filtered_result,
       };
     } catch (e) {
       return {
