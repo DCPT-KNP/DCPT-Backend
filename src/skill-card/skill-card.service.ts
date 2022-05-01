@@ -96,7 +96,7 @@ export class SkillCardService {
       /**
        * FIXME: Fix the code to find SkillTags
        * querybuilder로 해결했으면 좋겠음 (완)
-       * 태그가 겹치는 카드를 하나로 묶었으면 함
+       * 태그가 겹치는 카드를 하나로 묶었으면 함 (완)
        */
       const total_skillCards = await entityManager
         .createQueryBuilder()
@@ -148,7 +148,7 @@ export class SkillCardService {
         });
 
         if (idx === -1) {
-          cur.skillCard_tag = [ cur.skillCard_tag ];
+          cur.skillCard_tag = [cur.skillCard_tag];
           acc.push(cur);
         } else {
           acc[idx].skillCard_tag.push(cur.skillCard_tag);
@@ -280,43 +280,42 @@ export class SkillCardService {
        * querybuilder로 해결했으면 좋겠음
        */
 
-      const result = await entityManager.query(
-        `SELECT \
-          SkillCard_uuid AS uuid, \
-          tag, \
-          SkillCard_title AS title, \
-          SkillCard__missions_id AS mission_id, \
-          SkillCard__missions_missionTitle AS mission_title, \
-          SkillCard__missions_done AS mission_done \
-        FROM \
-          skill_tags SkillTags \
-          INNER JOIN ( \
-            SELECT \
-              SkillCard.uuid AS SkillCard_uuid, \
-              SkillCard.title AS SkillCard_title, \
-              SkillCard__missions.id AS SkillCard__missions_id, \
-              SkillCard__missions.missionTitle AS SkillCard__missions_missionTitle, \
-              SkillCard__missions.done AS SkillCard__missions_done, \
-              SkillCard__missions.skillCardUuid AS SkillCard__missions_skillCardUuid \
-            FROM \
-              skill_cards SkillCard \
-              LEFT JOIN missions SkillCard__missions ON SkillCard__missions.skillCardUuid = SkillCard.uuid \
-            WHERE \
-              (SkillCard.uuid = "${uuid}") \
-              AND ( \
-                SkillCard.uuid IN ("${uuid}") \
-              )) inline_view ON SkillTags.skillCardUuid = inline_view.SkillCard_uuid`,
-      );
+      const total_missions = await entityManager
+        .createQueryBuilder()
+        .select([
+          'SkillCard.uuid AS skillCard_uuid',
+          'SkillCard.title AS skillCard_title',
+          'SkillCard__missions.id AS missions_id',
+          'SkillCard__missions.missionTitle AS missions_title',
+          'SkillCard__missions.done AS missions_done',
+        ])
+        .from(SkillCard, 'SkillCard')
+        .leftJoin(
+          Mission,
+          'SkillCard__missions',
+          'SkillCard__missions.skillCardUuid = SkillCard.uuid',
+        )
+        .where('SkillCard.uuid = :uuid', { uuid })
+        .andWhere('SkillCard.uuid IN (:uuid)', { uuid })
+        .getRawMany();
 
-      return {
-        success: true,
-        message: '미션 리스트 조회 성공',
-        response: result,
-      };
+      if (total_missions[0].missions_id) {
+        return {
+          success: true,
+          message: '미션 리스트 조회 성공',
+          response: total_missions,
+        };
+      } else {
+        return {
+          success: true,
+          message: '미션 리스트를 조회했지만 데이터가 없음',
+          response: [],
+        };
+      }
     } catch (e) {
       return {
         success: false,
-        message: '',
+        message: '미션 리스트 조회 실패',
         response: null,
         error: e,
       };
