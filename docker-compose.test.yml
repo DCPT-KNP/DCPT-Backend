@@ -27,7 +27,7 @@ services:
 
   app:
     container_name: app
-    image: jiho5993/nerdit
+    image: jiho5993/nerdit-test
     build:
       context: ./                     # 빌드할 Dockerfile이 위치한 경로
       dockerfile: Dockerfile.test
