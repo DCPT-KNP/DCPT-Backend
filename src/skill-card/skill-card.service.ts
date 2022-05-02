@@ -120,7 +120,7 @@ export class SkillCardService {
         .where('User.id = :userId', { userId: user.id })
         .andWhere('User.id IN (:userId)', { userId: user.id });
 
-      const result = await entityManager
+      const total_result = await entityManager
         .createQueryBuilder()
         .select([
           'User_email AS email',
@@ -142,7 +142,7 @@ export class SkillCardService {
         .setParameters(total_skillCards.getParameters())
         .getRawMany();
 
-      const filtered_result = result.reduce((acc, cur) => {
+      const filtered_result = total_result.reduce((acc, cur) => {
         const idx = acc.findIndex(({ skillCard_uuid }) => {
           return skillCard_uuid === cur.skillCard_uuid;
         });
@@ -157,10 +157,33 @@ export class SkillCardService {
         return acc;
       }, []);
 
+      const userInfo = {
+        id: user.id,
+        email: user.email,
+        nickname: user.nickname,
+      };
+
+      const skillCards = [];
+      for (const item of filtered_result) {
+        skillCards.push({
+          uuid: item.skillCard_uuid,
+          tag: item.skillCard_tag,
+          title: item.skillCard_title,
+          description: item.skillCard_description,
+          tip: item.skillCard_tip,
+          status: item.skillCard_status
+        });
+      }
+
+      const result = {
+        ...userInfo,
+        skillCards
+      };
+
       return {
         success: true,
         message: '스킬 카드 조회 성공',
-        response: filtered_result,
+        response: result,
       };
     } catch (e) {
       return {
@@ -299,19 +322,34 @@ export class SkillCardService {
         .andWhere('SkillCard.uuid IN (:uuid)', { uuid })
         .getRawMany();
 
-      if (total_missions[0].missions_id) {
-        return {
-          success: true,
-          message: '미션 리스트 조회 성공',
-          response: total_missions,
-        };
-      } else {
-        return {
-          success: true,
-          message: '미션 리스트를 조회했지만 데이터가 없음',
-          response: [],
-        };
+      const skillCardInfo = {
+        uuid: total_missions[0].skillCard_uuid,
+        title: total_missions[0].skillCard_title
+      };
+
+      const missions = [];
+      for (const item of total_missions) {
+        if (!item.missions_id) {
+          break;
+        }
+
+        missions.push({
+          id: item.missions_id,
+          missionTitle: item.missions_title,
+          done: item.missions_done,
+        });
       }
+
+      const result = {
+        ...skillCardInfo,
+        missions
+      };
+
+      return {
+        success: true,
+        message: '미션 리스트 조회 성공',
+        response: result,
+      };
     } catch (e) {
       return {
         success: false,

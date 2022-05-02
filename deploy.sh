@@ -29,7 +29,10 @@ elif [ "$1" = "test" ]; then
 
 else
     # remove container
-    docker kill $(docker ps -q)
+    CONTAINER_LIST=`docker ps -a -q`
+
+    docker kill $CONTAINER_LIST
+    docker rm $CONTAINER_LIST
 
     # pull image
     docker pull jiho5993/nerdit
