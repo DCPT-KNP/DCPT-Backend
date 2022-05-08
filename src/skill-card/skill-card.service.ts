@@ -137,7 +137,7 @@ export class SkillCardService {
         .innerJoin(
           '(' + total_skillCards.getQuery() + ')',
           'total_skillCards',
-          'SkillTags.skillCardUuid = total_skillCards.User__skillCards_uuid',
+          'skillTags.skillCardUuid = total_skillCards.User__skillCards_uuid',
         )
         .setParameters(total_skillCards.getParameters())
         .getRawMany();
