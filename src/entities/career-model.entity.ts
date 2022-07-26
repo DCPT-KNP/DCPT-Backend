@@ -4,7 +4,7 @@ import { User } from './user.entity';
 
 @Entity({ name: 'career_models' })
 export class CareerModel {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column({

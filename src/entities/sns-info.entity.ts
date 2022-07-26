@@ -11,7 +11,7 @@ import { User } from './user.entity';
 
 @Entity({ name: 'sns_info' })
 export class SNSInfo {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -22,6 +23,11 @@ export class UserController {
   @Post('job-group')
   async createJobGroup(@Req() req, @Body() data: CreateJobGroupDto) {
     const { snsId, snsType } = await req.user;
+
+    if (!Array.isArray(data.names)) {
+      throw new BadRequestException('names가 배열이 아닙니다.');
+    }
+
     return await this._userService.createJobGroup(snsId, snsType, data);
   }
 

@@ -4,7 +4,7 @@ import { User } from './user.entity';
 
 @Entity({ name: 'other_categories' })
 export class OtherCategory {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column({

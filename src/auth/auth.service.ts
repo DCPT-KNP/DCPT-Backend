@@ -93,7 +93,8 @@ export class AuthService {
 
       return result.data;
     } catch (e) {
-      return e;
+      console.log(e.response.data, e.response.status);
+      throw new HttpException(e.response.data, e.response.status);
     }
   }
 
@@ -131,6 +132,7 @@ export class AuthService {
         email,
       };
     } catch (e) {
+      console.log(e.response.data, e.response.status);
       throw new HttpException(e.response.data, e.response.status);
     }
   }
@@ -152,6 +154,7 @@ export class AuthService {
 
       return result.data;
     } catch (e) {
+      console.log(e.response.data, e.response.status);
       throw new HttpException(e, 500);
     }
   }
@@ -190,6 +193,7 @@ export class AuthService {
         email,
       };
     } catch (e) {
+      console.log(e.response.data, e.response.status);
       throw new HttpException(e.response.data, e.response.status);
     }
   }
@@ -210,6 +214,7 @@ export class AuthService {
 
       return result.data;
     } catch (e) {
+      console.log("getGoogleToken", e.response.data, e.response.status);
       throw new HttpException(e.response.data, e.response.status);
     }
   }
@@ -249,6 +254,7 @@ export class AuthService {
         email,
       };
     } catch (e) {
+      console.log('getGoogleUserInfo', e.response.data, e.response.status);
       throw new HttpException(e.response.data, e.response.status);
     }
   }

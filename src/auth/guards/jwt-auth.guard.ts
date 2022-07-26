@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   CanActivate,
   ExecutionContext,
   HttpException,
@@ -25,7 +26,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') implements CanActivate {
 
     const { authorization } = request.headers;
     if (authorization === undefined) {
-      return false;
+      throw new BadRequestException('Authorization 헤더가 정의되어 있지 않습니다.');
     }
 
     const token = authorization.replace('Bearer ', '');
@@ -34,7 +35,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') implements CanActivate {
     const { sns_id, sns_type } = result;
 
     const findUser = await this._userService.findOneUser(sns_id, sns_type);
-    const user: User = findUser.response;
+    const user = findUser.response;
 
     request.user = user;
 
