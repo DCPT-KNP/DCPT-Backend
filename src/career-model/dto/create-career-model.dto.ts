@@ -24,18 +24,18 @@ export class CreateCareerModelDto {
 
     // secondary tag와 중복된 스킬 타입이 있다면
     if (dup.has(this.secondaryTag)) {
-      return false;
+      return true;
     }
     dup.set(this.secondaryTag, true);
 
     // other tag check
-    for (let i=0; i<this.otherTag.length; i++) {
+    for (let i = 0; i < this.otherTag.length; i++) {
       if (dup.has(this.otherTag[i])) {
-        return false;
+        return true;
       }
       dup.set(this.otherTag[i], true);
     }
 
-    return true;
+    return false;
   }
 }

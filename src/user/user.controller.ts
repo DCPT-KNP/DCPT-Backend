@@ -53,7 +53,7 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get()
+  @Get('me')
   async getAllUserInfo(@Req() req) {
     const { user } = req.user;
 

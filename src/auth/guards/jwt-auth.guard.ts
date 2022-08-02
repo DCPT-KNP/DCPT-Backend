@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Err } from '../../common/error';
-import { User } from '../../entities/user.entity';
 import { UserService } from '../../user/user.service';
 import { AuthService } from '../auth.service';
 
@@ -26,7 +25,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') implements CanActivate {
 
     const { authorization } = request.headers;
     if (authorization === undefined) {
-      throw new BadRequestException('Authorization 헤더가 정의되어 있지 않습니다.');
+      throw new BadRequestException(
+        'Authorization 헤더가 정의되어 있지 않습니다.',
+      );
     }
 
     const token = authorization.replace('Bearer ', '');

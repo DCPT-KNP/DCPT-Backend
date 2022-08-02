@@ -214,7 +214,7 @@ export class AuthService {
 
       return result.data;
     } catch (e) {
-      console.log("getGoogleToken", e.response.data, e.response.status);
+      console.log('getGoogleToken', e.response.data, e.response.status);
       throw new HttpException(e.response.data, e.response.status);
     }
   }

@@ -191,7 +191,7 @@ export class UserService {
       switch (e) {
         case 'result is undefined':
           throw new BadRequestException('해당하는 id가 존재하지 않습니다.');
-      
+
         default:
           return {
             success: false,
@@ -200,7 +200,6 @@ export class UserService {
             error: e,
           };
       }
-      
     }
   }
 

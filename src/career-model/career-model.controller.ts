@@ -36,10 +36,14 @@ export class CareerModelController {
 
     if (data.type === 'T' || data.type === 'I') {
       if (data.secondaryTag !== undefined) {
-        throw new BadRequestException('I, T모델은 secondary 역량(secondaryTag)이 포함되지 않습니다.');
+        throw new BadRequestException(
+          'I, T모델은 secondary 역량(secondaryTag)이 포함되지 않습니다.',
+        );
       }
       if (data.type === 'I' && data.otherTag.length > 0) {
-        throw new BadRequestException('I모델은 기타 역량(otherTag)이 포함되지 않습니다.');
+        throw new BadRequestException(
+          'I모델은 기타 역량(otherTag)이 포함되지 않습니다.',
+        );
       }
     }
 
@@ -51,7 +55,7 @@ export class CareerModelController {
       }
     }
 
-    if (!data.isDuplicatedType()) {
+    if (data.isDuplicatedType()) {
       throw new BadRequestException('중복된 역량이 존재합니다.');
     }
 
