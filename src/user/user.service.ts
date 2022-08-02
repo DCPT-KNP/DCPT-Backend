@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SNSType } from '../common/custom-type';
 import { Result } from '../common/result.interface';
@@ -174,6 +174,10 @@ export class UserService {
     try {
       const result = await this._jobGroupRepository.findOne(data.id);
 
+      if (!result) {
+        throw 'result is undefined';
+      }
+
       result.name = data.name;
 
       await this._jobGroupRepository.save(result);
@@ -184,12 +188,18 @@ export class UserService {
         response: result,
       };
     } catch (e) {
-      return {
-        success: false,
-        message: '직군 수정 실패',
-        response: null,
-        error: e,
-      };
+      switch (e) {
+        case 'result is undefined':
+          throw new BadRequestException('해당하는 id가 존재하지 않습니다.');
+
+        default:
+          return {
+            success: false,
+            message: '직군 수정 실패',
+            response: null,
+            error: e,
+          };
+      }
     }
   }
 

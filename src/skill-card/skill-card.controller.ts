@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -29,6 +30,10 @@ export class SkillCardController {
     @Body() data: CreateSkillCardDto,
   ): Promise<Result> {
     const { user } = req.user;
+
+    if (data.isDuplicatedType()) {
+      throw new BadRequestException('중복된 역량이 존재합니다.');
+    }
 
     return await this._skillCardService.createSkillCard(user, data);
   }
@@ -67,6 +72,12 @@ export class SkillCardController {
   @UseGuards(JwtAuthGuard)
   @Patch('mission')
   async modMisison(@Body() data: UpdateMissionDto) {
+    if (data.checkUndefinedProperty()) {
+      throw new BadRequestException(
+        'title이나 done의 속성이 하나라도 포함되어야 합니다.',
+      );
+    }
+
     const { id, title, done } = data;
 
     return await this._skillCardService.modMission(id, title, done);
@@ -75,6 +86,10 @@ export class SkillCardController {
   @UseGuards(JwtAuthGuard)
   @Delete('mission')
   async deleteMission(@Query('id') id: number) {
+    if (!id) {
+      throw new BadRequestException('id는 필수입니다.');
+    }
+
     return await this._skillCardService.deleteMission(id);
   }
 }

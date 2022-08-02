@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateSkillCardDto } from '../skill-card/dto/create-skill-card.dto';
 import { CardStatusType, DuplicateCard } from '../common/custom-type';
@@ -171,13 +171,13 @@ export class SkillCardService {
           title: item.skillCard_title,
           description: item.skillCard_description,
           tip: item.skillCard_tip,
-          status: item.skillCard_status
+          status: item.skillCard_status,
         });
       }
 
       const result = {
         ...userInfo,
-        skillCards
+        skillCards,
       };
 
       return {
@@ -228,6 +228,11 @@ export class SkillCardService {
   async addMission(uuid: string, title: string): Promise<Result> {
     try {
       const skillCard = await this._skillCardRepository.findOne(uuid);
+
+      if (!skillCard) {
+        throw 'skillCard: undefined';
+      }
+
       const newMission = new Mission(title, skillCard);
 
       await this._missionRepository.save(newMission);
@@ -238,17 +243,31 @@ export class SkillCardService {
         response: null,
       };
     } catch (e) {
-      return {
-        success: false,
-        message: '미션 생성 실패',
-        response: null,
-        error: e,
-      };
+      switch (e) {
+        case 'skillCard: undefined':
+          throw new BadRequestException(
+            '해당하는 skillCard가 존재하지 않습니다.',
+          );
+
+        default:
+          return {
+            success: false,
+            message: '미션 생성 실패',
+            response: null,
+            error: e,
+          };
+      }
     }
   }
 
   async deleteMission(id: number): Promise<Result> {
     try {
+      const mission = await this._missionRepository.findOne(id);
+
+      if (!mission) {
+        throw 'mission: undefined';
+      }
+
       await this._missionRepository.delete(id);
 
       return {
@@ -257,12 +276,18 @@ export class SkillCardService {
         response: null,
       };
     } catch (e) {
-      return {
-        success: false,
-        message: '미션 삭제 실패',
-        response: null,
-        error: e,
-      };
+      switch (e) {
+        case 'mission: undefined':
+          throw new BadRequestException('잘못된 id이거나 없는 id입니다.');
+
+        default:
+          return {
+            success: false,
+            message: '미션 삭제 실패',
+            response: null,
+            error: e,
+          };
+      }
     }
   }
 
@@ -273,6 +298,10 @@ export class SkillCardService {
   ): Promise<Result> {
     try {
       const mission = await this._missionRepository.findOne(id);
+
+      if (!mission) {
+        throw 'mission: undefined';
+      }
 
       mission.missionTitle = title !== undefined ? title : mission.missionTitle;
       mission.done = done !== undefined ? done : mission.done;
@@ -285,12 +314,18 @@ export class SkillCardService {
         response: null,
       };
     } catch (e) {
-      return {
-        success: false,
-        message: '미션 수정 실패',
-        response: null,
-        error: e,
-      };
+      switch (e) {
+        case 'mission: undefined':
+          throw new BadRequestException('잘못된 id이거나 없는 id입니다.');
+
+        default:
+          return {
+            success: false,
+            message: '미션 수정 실패',
+            response: null,
+            error: e,
+          };
+      }
     }
   }
 
@@ -319,12 +354,16 @@ export class SkillCardService {
           'SkillCard__missions.skillCardUuid = SkillCard.uuid',
         )
         .where('SkillCard.uuid = :uuid', { uuid })
-        .andWhere('SkillCard.uuid IN (:uuid)', { uuid })
+        // .andWhere('SkillCard.uuid IN (:uuid)', { uuid })
         .getRawMany();
+
+      if (total_missions.length === 0) {
+        throw 'uuid: error';
+      }
 
       const skillCardInfo = {
         uuid: total_missions[0].skillCard_uuid,
-        title: total_missions[0].skillCard_title
+        title: total_missions[0].skillCard_title,
       };
 
       const missions = [];
@@ -342,7 +381,7 @@ export class SkillCardService {
 
       const result = {
         ...skillCardInfo,
-        missions
+        missions,
       };
 
       return {
@@ -351,12 +390,18 @@ export class SkillCardService {
         response: result,
       };
     } catch (e) {
-      return {
-        success: false,
-        message: '미션 리스트 조회 실패',
-        response: null,
-        error: e,
-      };
+      switch (e) {
+        case 'uuid: error':
+          throw new BadRequestException('잘못된 uuid입니다.');
+
+        default:
+          return {
+            success: false,
+            message: '미션 리스트 조회 실패',
+            response: null,
+            error: e,
+          };
+      }
     }
   }
 }

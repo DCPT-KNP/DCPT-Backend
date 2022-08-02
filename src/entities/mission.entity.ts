@@ -3,7 +3,7 @@ import { SkillCard } from './skill-card.entity';
 
 @Entity({ name: 'missions' })
 export class Mission {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()

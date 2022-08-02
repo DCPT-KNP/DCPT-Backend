@@ -4,7 +4,7 @@ import { SkillCard } from './skill-card.entity';
 
 @Entity({ name: 'skill_tags' })
 export class SkillTags {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column({

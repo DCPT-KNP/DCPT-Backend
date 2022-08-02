@@ -29,19 +29,34 @@ export class CareerModelController {
     if (data.type === 'PI') {
       if (data.secondaryTag === undefined) {
         throw new BadRequestException(
-          'secondary 역량이 포함되어 있지 않습니다',
+          'PI모델은 secondary 역량(secondaryTag)이 포함되어야 합니다.',
+        );
+      }
+    }
+
+    if (data.type === 'T' || data.type === 'I') {
+      if (data.secondaryTag !== undefined) {
+        throw new BadRequestException(
+          'I, T모델은 secondary 역량(secondaryTag)이 포함되지 않습니다.',
+        );
+      }
+      if (data.type === 'I' && data.otherTag.length > 0) {
+        throw new BadRequestException(
+          'I모델은 기타 역량(otherTag)이 포함되지 않습니다.',
         );
       }
     }
 
     if (data.type === 'T' || data.type === 'PI') {
-      if (data.otherTag === undefined || data.otherTag.length === 0) {
+      if (!(1 <= data.otherTag.length && data.otherTag.length <= 5)) {
         throw new BadRequestException(
-          '기타 역량을 최소 1개 이상 선택해야 합니다.',
+          'T, PI모델의 기타 역량은 1~5개 선택해야 합니다.',
         );
-      } else if (data.otherTag.length > 5) {
-        throw new BadRequestException('기타 역량의 갯수는 최대 5개입니다.');
       }
+    }
+
+    if (data.isDuplicatedType()) {
+      throw new BadRequestException('중복된 역량이 존재합니다.');
     }
 
     return await this._careerModelService.createCareerModel(

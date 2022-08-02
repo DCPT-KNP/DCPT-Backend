@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Res } from '@nestjs/common';
+import { Controller, Get, HttpException, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { SNSType } from '../common/custom-type';
@@ -15,6 +15,10 @@ export class AuthController {
     @Query('code') code,
     @Res({ passthrough: true }) res: Response,
   ) {
+    if (!code) {
+      throw new HttpException('code query가 없습니다.', 400);
+    }
+
     const { access_token } = await this._authService.getKakaoToken(code);
     const { id, nickname, email } = await this._authService.getKakaoUserInfo(
       access_token,
@@ -55,6 +59,10 @@ export class AuthController {
     @Query('code') code,
     @Res({ passthrough: true }) res: Response,
   ) {
+    if (!code) {
+      throw new HttpException('code query가 없습니다.', 400);
+    }
+
     const { access_token } = await this._authService.getNaverToken(code);
     const { id, nickname, email } = await this._authService.getNaverUserInfo(
       access_token,
@@ -95,6 +103,10 @@ export class AuthController {
     @Query('code') code,
     @Res({ passthrough: true }) res: Response,
   ) {
+    if (!code) {
+      throw new HttpException('code query가 없습니다.', 400);
+    }
+
     const { access_token } = await this._authService.getGoogleToken(code);
     const { id, nickname, email } = await this._authService.getGoogleUserInfo(
       access_token,

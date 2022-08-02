@@ -11,4 +11,12 @@ export class UpdateMissionDto {
   @IsOptional()
   @IsBoolean()
   done?: boolean;
+
+  checkUndefinedProperty() {
+    if (this.title === undefined && this.done === undefined) {
+      return true;
+    }
+
+    return false;
+  }
 }
