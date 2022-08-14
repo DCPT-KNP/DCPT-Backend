@@ -132,7 +132,7 @@ export class CareerModelService {
       result.push({
         name: i,
         full_name: skillList[i].full_name,
-        desc: skillList[i].description,
+        description: skillList[i].description,
       });
     }
 

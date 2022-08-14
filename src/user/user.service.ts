@@ -236,7 +236,7 @@ export class UserService {
     data: UpdateCareerYearDto,
   ): Promise<Result> {
     try {
-      user.careerYear = data.career;
+      user.careerYear = data.year;
 
       await this._userRepository.save(user);
 
