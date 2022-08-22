@@ -35,11 +35,11 @@ export class AuthController {
       nickname,
     );
 
-    res.cookie('resfreshToken', refreshToken, {
-      maxAge: 1000 * 60 * 60 * 24 * 14,
-      sameSite: 'none',
-      httpOnly: true,
-    });
+    // res.cookie('resfreshToken', refreshToken, {
+    //   maxAge: 1000 * 60 * 60 * 24 * 14,
+    //   sameSite: 'none',
+    //   httpOnly: true,
+    // });
 
     return {
       success: true,
@@ -79,11 +79,11 @@ export class AuthController {
       nickname,
     );
 
-    res.cookie('resfreshToken', refreshToken, {
-      maxAge: 1000 * 60 * 60 * 24 * 14,
-      sameSite: 'none',
-      httpOnly: true,
-    });
+    // res.cookie('resfreshToken', refreshToken, {
+    //   maxAge: 1000 * 60 * 60 * 24 * 14,
+    //   sameSite: 'none',
+    //   httpOnly: true,
+    // });
 
     return {
       success: true,
@@ -123,11 +123,11 @@ export class AuthController {
       nickname,
     );
 
-    res.cookie('resfreshToken', refreshToken, {
-      maxAge: 1000 * 60 * 60 * 24 * 14,
-      sameSite: 'none',
-      httpOnly: true,
-    });
+    // res.cookie('resfreshToken', refreshToken, {
+    //   maxAge: 1000 * 60 * 60 * 24 * 14,
+    //   sameSite: 'none',
+    //   httpOnly: true,
+    // });
 
     return {
       success: true,
