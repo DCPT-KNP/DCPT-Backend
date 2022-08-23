@@ -6,5 +6,5 @@ export class UpdateStatusSkillCardDto {
   uuid: string;
 
   @IsEnum(CardStatusType)
-  type: CardStatusType;
+  status: CardStatusType;
 }
