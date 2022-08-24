@@ -51,7 +51,7 @@ export class SkillCardController {
   async modStatusSkillCard(@Body() data: UpdateStatusSkillCardDto) {
     return await this._skillCardService.modStatusSkillCard(
       data.uuid,
-      data.type,
+      data.status,
     );
   }
 

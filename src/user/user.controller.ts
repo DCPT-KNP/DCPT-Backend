@@ -20,7 +20,7 @@ export class UserController {
   constructor(private readonly _userService: UserService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post('job-group')
+  @Post('job')
   async createJobGroup(@Req() req, @Body() data: CreateJobGroupDto) {
     const { snsId, snsType } = await req.user;
 
@@ -32,7 +32,7 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch('job-group')
+  @Patch('job')
   async modifyJobGroup(@Body() data: UpdateJobGroupDto) {
     return await this._userService.modifyJobGroup(data);
   }

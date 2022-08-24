@@ -197,7 +197,7 @@ export class SkillCardService {
 
   async modStatusSkillCard(
     uuid: string,
-    type: CardStatusType,
+    status: CardStatusType,
   ): Promise<Result> {
     try {
       const result = await this._skillCardRepository.findOne({
@@ -206,7 +206,7 @@ export class SkillCardService {
         },
       });
 
-      result.status = type;
+      result.status = status;
 
       await this._skillCardRepository.save(result);
 
