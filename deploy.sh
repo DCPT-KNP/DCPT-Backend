@@ -3,8 +3,6 @@
 # ./deploy.sh test : 테스트 서버 배포
 # ./deploy.sh : ec2에서 컨테이너 구동
 
-# TODO: 도커 스크립트 작성
-
 if [ "$1" = "prod" ]; then
 
     echo "******************** Deploy real server... ********************"
@@ -23,11 +21,11 @@ elif [ "$1" = "test" ]; then
     # test server deploy
     echo "******************** Deploy test server... ********************"
     docker rmi -f jiho5993/nerdit-test
-    docker-compose -f docker-compose.test.yml build
+    docker build -f Dockerfile.test -t jiho5993/nerdit-test .
     docker push jiho5993/nerdit-test
     echo "******************** Success ********************"
 
-else
+elif [ "$1" = "run" ]; then
     # remove container
     CONTAINER_LIST=`docker ps -a -q`
 
@@ -39,4 +37,9 @@ else
 
     # run container
     docerk-compose up -d jiho5993/nerdit
+else
+    echo "\033[33m"*** param ***"\033[0m"
+    echo "1. prod"
+    echo "2. test"
+    echo "3. run"
 fi

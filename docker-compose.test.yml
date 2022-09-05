@@ -29,8 +29,8 @@ services:
     container_name: app
     image: jiho5993/nerdit-test
     build:
-      context: ./                     # 빌드할 Dockerfile이 위치한 경로
-      dockerfile: Dockerfile.test
+      context: .                      # 빌드할 Dockerfile이 위치한 경로
+      dockerfile: ./Dockerfile.test
     env_file:
       - .env.test
     depends_on:
@@ -39,8 +39,9 @@ services:
       - "3000"                  # 다른 컨테이너에게 3000번 포트 open
     volumes:
       - ./:/app                       # host <-> container의 source 디렉토리를 공유
-      - /app/node_modules
+      # - /app/node_modules
     restart: "unless-stopped"
+    command: [ "sh", "-c", "sleep 5 && npm run start:dev" ]
 
 volumes:
   mysql:
