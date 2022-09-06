@@ -30,16 +30,6 @@ export class AuthController {
       id,
       SNSType.KAKAO,
     );
-    const refreshToken = await this._authService.createRefreshToken(
-      email,
-      nickname,
-    );
-
-    // res.cookie('resfreshToken', refreshToken, {
-    //   maxAge: 1000 * 60 * 60 * 24 * 14,
-    //   sameSite: 'none',
-    //   httpOnly: true,
-    // });
 
     return {
       success: true,
@@ -74,16 +64,6 @@ export class AuthController {
       id,
       SNSType.NAVER,
     );
-    const refreshToken = await this._authService.createRefreshToken(
-      email,
-      nickname,
-    );
-
-    // res.cookie('resfreshToken', refreshToken, {
-    //   maxAge: 1000 * 60 * 60 * 24 * 14,
-    //   sameSite: 'none',
-    //   httpOnly: true,
-    // });
 
     return {
       success: true,
@@ -118,16 +98,6 @@ export class AuthController {
       id,
       SNSType.GOOGLE,
     );
-    const refreshToken = await this._authService.createRefreshToken(
-      email,
-      nickname,
-    );
-
-    // res.cookie('resfreshToken', refreshToken, {
-    //   maxAge: 1000 * 60 * 60 * 24 * 14,
-    //   sameSite: 'none',
-    //   httpOnly: true,
-    // });
 
     return {
       success: true,
