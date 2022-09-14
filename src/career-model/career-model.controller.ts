@@ -48,9 +48,9 @@ export class CareerModelController {
     }
 
     if (data.type === 'T' || data.type === 'PI') {
-      if (!(1 <= data.otherTag.length && data.otherTag.length <= 5)) {
+      if (!(1 <= data.otherTag.length)) {
         throw new BadRequestException(
-          'T, PI모델의 기타 역량은 1~5개 선택해야 합니다.',
+          'T, PI모델의 기타 역량은 1개 이상 선택해야 합니다.',
         );
       }
     }
