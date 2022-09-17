@@ -19,4 +19,13 @@ export const getResponseData = async (res): Promise<any> => {
   const { body: { response } } = await res;
 
   return response;
+};
+
+export const getResponseError = async (res): Promise<any> => {
+  const { body: { message, error } } = await res;
+
+  return {
+    message,
+    error
+  };
 }
