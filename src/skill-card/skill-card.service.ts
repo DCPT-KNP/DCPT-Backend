@@ -8,7 +8,7 @@ import { SkillCard } from '../entities/skill-card.entity';
 import { User } from '../entities/user.entity';
 import { Connection, Repository, getManager } from 'typeorm';
 import { Mission } from '../entities/mission.entity';
-import { SkillTags } from 'src/entities/skill-tags.entity';
+import { SkillTags } from '../entities/skill-tags.entity';
 
 @Injectable()
 export class SkillCardService {

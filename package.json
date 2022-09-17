@@ -19,7 +19,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "cross-env NODE_ENV=test jest --detectOpenHandles --config ./test/jest-e2e.json"
+    "test:e2e": "cross-env NODE_ENV=test jest --detectOpenHandles --config ./test/jest-e2e.json",
+    "test:e2e:result": "npm run test:e2e -- --verbose --noStackTrace 2>&1 | grep -v '●' | grep -ve '[Ee]xpected' | grep -v 'npm' | grep -v 'Received' | grep -ve '^$'"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",

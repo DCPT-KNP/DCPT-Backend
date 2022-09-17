@@ -29,53 +29,53 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  describe('my test', () => {
-    it('test', () => {
-      return request(app.getHttpServer()).get('/').expect(404);
-    });
-  });
+  // describe('my test', () => {
+  //   it('test', () => {
+  //     return request(app.getHttpServer()).get('/').expect(404);
+  //   });
+  // });
 
-  describe('auth', () => {
-    it('카카오 로그인 (잘못된 인가 코드)', () => {
-      return request(app.getHttpServer())
-        .get('/auth/kakao')
-        .query({
-          code: 'wrong code',
-        })
-        .expect(401);
-    });
+  // describe('auth', () => {
+  //   it('카카오 로그인 (잘못된 인가 코드)', () => {
+  //     return request(app.getHttpServer())
+  //       .get('/auth/kakao')
+  //       .query({
+  //         code: 'wrong code',
+  //       })
+  //       .expect(401);
+  //   });
 
-    it('카카오 로그인 (옳은 인가 코드)', () => {
-      return request(app.getHttpServer())
-        .get('/auth/kakao')
-        .query({
-          code: AUTHORIZATION_CODE,
-        })
-        .expect(200)
-        .then((res) => {
-          const { body } = res;
+  //   it('카카오 로그인 (옳은 인가 코드)', () => {
+  //     return request(app.getHttpServer())
+  //       .get('/auth/kakao')
+  //       .query({
+  //         code: AUTHORIZATION_CODE,
+  //       })
+  //       .expect(200)
+  //       .then((res) => {
+  //         const { body } = res;
 
-          console.log(body);
+  //         console.log(body);
 
-          expect(body.success).to.equal(true);
-          expect(body.response).to.haveOwnProperty('accessToken');
+  //         expect(body.success).to.equal(true);
+  //         expect(body.response).to.haveOwnProperty('accessToken');
 
-          accessToken = body.response.accessToken;
-        });
-    });
-  });
+  //         accessToken = body.response.accessToken;
+  //       });
+  //   });
+  // });
 
-  describe('user', () => {
-    it('get all user info', () => {
-      return request(app.getHttpServer())
-        .get('/user')
-        .set('Authorization', `Bearer ${accessToken}`)
-        .expect(200)
-        .then((res) => {
-          const { body } = res;
+  // describe('user', () => {
+  //   it('get all user info', () => {
+  //     return request(app.getHttpServer())
+  //       .get('/user')
+  //       .set('Authorization', `Bearer ${accessToken}`)
+  //       .expect(200)
+  //       .then((res) => {
+  //         const { body } = res;
 
-          console.log(body);
-        });
-    });
-  });
+  //         console.log(body);
+  //       });
+  //   });
+  // });
 });
