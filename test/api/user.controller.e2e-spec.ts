@@ -75,10 +75,37 @@ describe('User Controller Test', () => {
         .set(headerKeyName, wrongToken)
         .expect(401);
 
-      response.then(res => console.log(res));
-
       // then
+      const { message, error } = await getResponseError(response);
+
+      // expect(message).toEqual('jwt malformed');
+      expect(error).toEqual('Unauthorized');
+
       return response;
     });
+  });
+
+  describe('직군 등록', () => {
+    const path = `${apiPath}/job`;
+
+    it.todo('직군 등록 api test 작성');
+  });
+
+  describe('직군 수정', () => {
+    const path = `${apiPath}/job`;
+
+    it.todo('직군 수정 api test 작성');
+  });
+
+  describe('연차 등록', () => {
+    const path = `${apiPath}/career-year`;
+
+    it.todo('연차 등록 api test 작성');
+  });
+
+  describe('연차 수정', () => {
+    const path = `${apiPath}/career-year`;
+
+    it.todo('연차 수정 api test 작성');
   });
 });

@@ -57,6 +57,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') implements CanActivate {
         case 'jwt expired':
           throw new UnauthorizedException(Err.TOKEN.JWT_EXPIRED);
 
+        case 'jwt malformed':
+          throw new UnauthorizedException('jwt malformed');
+
         default:
           throw new HttpException('서버 오류입니다.', 500);
       }

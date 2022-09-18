@@ -24,6 +24,36 @@ describe('Auth Controller Test', () => {
   describe('카카오 로그인 테스트', () => {
     const path = `${apiPath}/kakao`;
 
+    it('인가코드 인증 성공 (200)', async () => {
+      // given
+      const query = {
+        code: process.env.KAKAO_TOKEN
+      };
+      console.log(process.env.KAKAO_TOKEN);
+
+      // when
+      const response = request(app.getHttpServer())
+        .get(path)
+        .query(query)
+        .expect(200);
+
+      response
+        .then(res => {
+          console.log(res);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+
+      // then
+      const result = await getResponseData(response);
+      console.log(result);
+
+      expect(result).toBeInstanceOf(Object);
+
+      return response;
+    });
+
     it('카카오 인가코드 인증 실패 (400)', async () => {
       // Given
       const token = 'wrong token';
@@ -38,27 +68,6 @@ describe('Auth Controller Test', () => {
         .expect(400);
 
       // Then
-      return response;
-    });
-
-    it('인가코드 인증 성공 (200)', async () => {
-      // given
-      const query = {
-        code: process.env.KAKAO_TOKEN
-      };
-
-      // when
-      const response = request(app.getHttpServer())
-        .get(path)
-        .query(query)
-        .expect(200);
-
-      // then
-      const result = await getResponseData(response);
-      console.log(result);
-
-      expect(result).toBeInstanceOf(Object);
-
       return response;
     });
   });
