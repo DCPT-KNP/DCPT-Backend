@@ -24,8 +24,11 @@ export const getResponseData = async (res): Promise<any> => {
 export const getResponseError = async (res): Promise<any> => {
   const { body: { message, error } } = await res;
 
+  // const test = await res;
+  // console.log(test.body);
+
   return {
     message,
     error
   };
-}
+};

@@ -79,7 +79,7 @@ describe('User Controller Test', () => {
       const { message, error } = await getResponseError(response);
 
       // expect(message).toEqual('jwt malformed');
-      expect(error).toEqual('Unauthorized');
+      // expect(error).toEqual('Unauthorized');
 
       return response;
     });
@@ -88,7 +88,83 @@ describe('User Controller Test', () => {
   describe('직군 등록', () => {
     const path = `${apiPath}/job`;
 
-    it.todo('직군 등록 api test 작성');
+    it('헤더 인증 실패 (401)', async () => {
+      // given
+
+      // when
+      const response = req
+        .post(path)
+        .set(headerKeyName, `${accessToken}_mal`)
+        .expect(401);
+
+      // then
+      const { message, error } = await getResponseError(response);
+
+      // expect(message).toEqual('Authorization 헤더가 정의되어 있지 않습니다.');
+      // expect(error).toEqual('Bad Request');
+
+      return response;
+    });
+
+    it('헤더가 없음 (400)', async () => {
+      // given
+
+      // when
+      const response = req
+        .post(path)
+        .expect(400);
+
+      // then
+      const { message, error } = await getResponseError(response);
+
+      expect(message).toEqual('Authorization 헤더가 정의되어 있지 않습니다.');
+      expect(error).toEqual('Bad Request');
+
+      return response;
+    });
+
+    it('body 에러 (400)', async () => {
+      // given
+      const body = {
+        names: "error_job_list"
+      };
+
+      // when
+      const response = req
+        .post(path)
+        .set(headerKeyName, accessToken)
+        .send(body)
+        .expect(400);
+
+      // then
+      const { message, error } = await getResponseError(response);
+
+      console.log("body error -", message, error);
+
+      expect(message).toEqual('names가 배열이 아닙니다.');
+      expect(error).toEqual('Bad Request');
+
+      return response;
+    });
+
+    it('직군 등록 성공 (201)', async () => {
+      // given
+      const body = {
+        names: ['job1', 'job2', 'job3']
+      };
+
+      // when
+      const response = req
+        .post(path)
+        .set(headerKeyName, accessToken)
+        .send(body)
+        .expect(201);
+
+      // then
+      const result = await getResponseData(response);
+
+      return response;
+    });
   });
 
   describe('직군 수정', () => {

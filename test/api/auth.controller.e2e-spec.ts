@@ -37,14 +37,6 @@ describe('Auth Controller Test', () => {
         .query(query)
         .expect(200);
 
-      response
-        .then(res => {
-          console.log(res);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-
       // then
       const result = await getResponseData(response);
       console.log(result);
