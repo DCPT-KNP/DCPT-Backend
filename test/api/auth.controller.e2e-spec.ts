@@ -29,7 +29,6 @@ describe('Auth Controller Test', () => {
       const query = {
         code: process.env.KAKAO_TOKEN
       };
-      console.log(process.env.KAKAO_TOKEN);
 
       // when
       const response = request(app.getHttpServer())

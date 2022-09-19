@@ -139,8 +139,6 @@ describe('User Controller Test', () => {
       // then
       const { message, error } = await getResponseError(response);
 
-      console.log("body error -", message, error);
-
       expect(message).toEqual('names가 배열이 아닙니다.');
       expect(error).toEqual('Bad Request');
 
@@ -170,7 +168,86 @@ describe('User Controller Test', () => {
   describe('직군 수정', () => {
     const path = `${apiPath}/job`;
 
-    it.todo('직군 수정 api test 작성');
+    it('헤더 인증 실패 (401)', async () => {
+      // given
+
+      // when
+      const response = req
+        .patch(path)
+        .set(headerKeyName, `${accessToken}_mal`)
+        .expect(401);
+
+      // then
+      const { message, error } = await getResponseError(response);
+
+      return response;
+    });
+
+    it('헤더가 없음 (400)', async() => {
+      // given
+      
+      // when
+      const response = req
+        .patch(path)
+        .expect(400);
+
+      // then
+      const { message, error } = await getResponseError(response);
+
+      expect(message).toEqual('Authorization 헤더가 정의되어 있지 않습니다.');
+      expect(error).toEqual('Bad Request');
+
+      return response;
+    });
+
+    it('body 에러 (400)', async () => {
+      // given
+      const body = {
+        id: 100,
+        name: 'empty'
+      };
+
+      // when
+      const response = req
+        .patch(path)
+        .set(headerKeyName, accessToken)
+        .send(body)
+        .expect(400);
+
+      // then
+      const { message, error } = await getResponseError(response);
+
+      expect(message).toEqual('해당하는 id가 존재하지 않습니다.');
+      expect(error).toEqual('Bad Request');
+
+      return response;
+    });
+
+    it('직군 수정 성공 (200)', async () => {
+      // given
+      const body = {
+        id: 1,
+        name: 'modified job'
+      };
+
+      // when
+      const response = req
+        .patch(path)
+        .set(headerKeyName, accessToken)
+        .send(body)
+        .expect(200);
+
+      // then
+      const result = await getResponseData(response);
+
+      expect(result).toHaveProperty('name');
+      expect(result).toHaveProperty('id');
+
+      expect(result.name).toEqual('modified job');
+      expect(result.id).toEqual(1);
+
+      return response;
+    });
   });
 
   describe('연차 등록', () => {
