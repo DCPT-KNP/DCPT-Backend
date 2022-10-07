@@ -12,6 +12,8 @@ import { UserModule } from './user/user.module';
 import { CareerModelModule } from './career-model/career-model.module';
 import { SkillCardModule } from './skill-card/skill-card.module';
 import { ImageModule } from './image/image.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 @Module({
   imports: [
@@ -40,6 +42,12 @@ import { ImageModule } from './image/image.module';
     SkillCardModule,
     ImageModule,
   ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor
+    }
+  ]
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

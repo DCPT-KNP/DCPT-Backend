@@ -2,6 +2,7 @@ import { Controller, Get, HttpException, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { SNSType } from '../common/custom-type';
+import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -11,6 +12,7 @@ export class AuthController {
    * kakao strategy
    */
   @Get('kakao')
+  @ResponseMessage('카카오 로그인 성공')
   async kakaoLogin(
     @Query('code') code,
     @Res({ passthrough: true }) res: Response,
@@ -31,13 +33,7 @@ export class AuthController {
       SNSType.KAKAO,
     );
 
-    return {
-      success: true,
-      message: '카카오 로그인 성공',
-      response: {
-        accessToken,
-      },
-    };
+    return accessToken;
   }
 
   /**
@@ -45,6 +41,7 @@ export class AuthController {
    */
 
   @Get('naver')
+  @ResponseMessage('네이버 로그인 성공')
   async naverLogin(
     @Query('code') code,
     @Res({ passthrough: true }) res: Response,
@@ -65,13 +62,7 @@ export class AuthController {
       SNSType.NAVER,
     );
 
-    return {
-      success: true,
-      message: '네이버 로그인 성공',
-      response: {
-        accessToken,
-      },
-    };
+    return accessToken;
   }
 
   /**
@@ -79,6 +70,7 @@ export class AuthController {
    */
 
   @Get('google')
+  @ResponseMessage('구글 로그인 성공')
   async googleLogin(
     @Query('code') code,
     @Res({ passthrough: true }) res: Response,
@@ -99,12 +91,6 @@ export class AuthController {
       SNSType.GOOGLE,
     );
 
-    return {
-      success: true,
-      message: '구글 로그인 성공',
-      response: {
-        accessToken,
-      },
-    };
+    return accessToken;
   }
 }

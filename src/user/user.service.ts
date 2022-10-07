@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SNSType } from '../common/custom-type';
 import { Result } from '../common/result.interface';
@@ -151,26 +151,17 @@ export class UserService {
 
       await queryRunner.commitTransaction();
 
-      return {
-        success: true,
-        message: '직군 생성 성공',
-        response: null,
-      };
+      return null;
     } catch (e) {
       await queryRunner.rollbackTransaction();
 
-      return {
-        success: false,
-        message: '직군 생성 실패',
-        response: null,
-        error: e,
-      };
+      throw new HttpException(e, 500);
     } finally {
       await queryRunner.release();
     }
   }
 
-  async modifyJobGroup(data: UpdateJobGroupDto): Promise<Result> {
+  async modifyJobGroup(data: UpdateJobGroupDto): Promise<JobGroup> {
     try {
       const result = await this._jobGroupRepository.findOne(data.id);
 
@@ -182,23 +173,14 @@ export class UserService {
 
       await this._jobGroupRepository.save(result);
 
-      return {
-        success: true,
-        message: '직군 수정 성공',
-        response: result,
-      };
+      return result;
     } catch (e) {
       switch (e) {
         case 'result is undefined':
           throw new BadRequestException('해당하는 id가 존재하지 않습니다.');
 
         default:
-          return {
-            success: false,
-            message: '직군 수정 실패',
-            response: null,
-            error: e,
-          };
+          throw new HttpException(e, 500);
       }
     }
   }
@@ -216,46 +198,28 @@ export class UserService {
 
       await this._userRepository.save(user);
 
-      return {
-        success: true,
-        message: '연차 등록 성공',
-        response: null,
-      };
+      return null;
     } catch (e) {
-      return {
-        success: false,
-        message: '연차 등록 실패',
-        response: null,
-        error: e,
-      };
+      throw new HttpException(e, 500);
     }
   }
 
   async modifyCareerYear(
     user: User,
     data: UpdateCareerYearDto,
-  ): Promise<Result> {
+  ): Promise<User> {
     try {
       user.careerYear = data.year;
 
       await this._userRepository.save(user);
 
-      return {
-        success: true,
-        message: '연차 수정 성공',
-        response: user,
-      };
+      return user;
     } catch (e) {
-      return {
-        success: false,
-        message: '연차 수정 실패',
-        response: null,
-        error: e,
-      };
+      throw new HttpException(e, 500);
     }
   }
 
-  async getAllUserInfo(user: User): Promise<Result> {
+  async getAllUserInfo(user: User): Promise<User> {
     try {
       const result = await this._userRepository.findOne({
         select: ['id', 'email', 'nickname', 'image', 'careerYear', 'jobGroups'],
@@ -265,18 +229,9 @@ export class UserService {
         relations: ['jobGroups'],
       });
 
-      return {
-        success: true,
-        message: '유저 정보 조회 성공',
-        response: result,
-      };
+      return result;
     } catch (e) {
-      return {
-        success: false,
-        message: '유저 정보 조회 실패',
-        response: null,
-        error: e,
-      };
+      throw new HttpException(e, 500);
     }
   }
 }
