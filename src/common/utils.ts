@@ -8,7 +8,7 @@ import { User } from '../entities/user.entity';
 import { SkillCard } from '../entities/skill-card.entity';
 import nicknameList from '../static/nickname.json';
 import { AWS_S3_HOST } from './config';
-import { SkillTags } from 'src/entities/skill-tags.entity';
+import { SkillTags } from '../entities/skill-tags.entity';
 
 const nicknameGenerator = () => {
   const { variables } = nicknameList;
