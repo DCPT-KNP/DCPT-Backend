@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SkillType, SNSType } from '../common/custom-type';
+import { SkillInfo, SkillType, SNSType } from '../common/custom-type';
 import { Result } from '../common/result.interface';
 import { CareerModel } from '../entities/career-model.entity';
 import { OtherCategory } from '../entities/other-category.entity';
@@ -56,11 +56,7 @@ export class CareerModelService {
 
       await queryRunner.commitTransaction();
 
-      return {
-        success: true,
-        message: '커리어 모델 생성 성공',
-        response: null,
-      };
+      return null;
     } catch (e) {
       await queryRunner.rollbackTransaction();
 
@@ -77,7 +73,7 @@ export class CareerModelService {
     }
   }
 
-  async getCareerModel(user: User): Promise<Result> {
+  async getCareerModel(user: User): Promise<User> {
     try {
       const result = await this._userRepository.findOne({
         select: ['id', 'email', 'nickname', 'careerModel', 'otherCategories'],
@@ -87,22 +83,13 @@ export class CareerModelService {
         relations: ['careerModel', 'otherCategories'],
       });
 
-      return {
-        success: true,
-        message: '커리어 모델 조회 성공',
-        response: result,
-      };
+      return result;
     } catch (e) {
-      return {
-        success: false,
-        message: '커리어 모델 조회 실패',
-        response: null,
-        error: e,
-      };
+      throw new HttpException(e, 500);
     }
   }
 
-  async modifyRoadmapTitle(data: UpdateCareerModelDto): Promise<Result> {
+  async modifyRoadmapTitle(data: UpdateCareerModelDto): Promise<CareerModel> {
     try {
       const result = await this._careerModelRepository.findOne(data.id);
 
@@ -110,23 +97,14 @@ export class CareerModelService {
 
       await this._careerModelRepository.save(result);
 
-      return {
-        success: true,
-        message: '로드맵 제목 수정 성공',
-        response: result,
-      };
+      return result;
     } catch (e) {
-      return {
-        success: false,
-        message: '로드맵 제목 수정 실패',
-        response: null,
-        error: e,
-      };
+      throw new HttpException(e, 500);
     }
   }
 
-  getSkillInfo(): Result {
-    const result = [];
+  getSkillInfo(): SkillInfo[] {
+    const result: SkillInfo[] = [];
 
     for (const i in SkillType) {
       result.push({
@@ -136,10 +114,6 @@ export class CareerModelService {
       });
     }
 
-    return {
-      success: true,
-      message: '스킬 조회 성공',
-      response: result,
-    };
+    return result;
   }
 }
