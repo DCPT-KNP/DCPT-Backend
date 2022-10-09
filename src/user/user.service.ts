@@ -1,7 +1,6 @@
 import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SNSType } from '../common/custom-type';
-import { Result } from '../common/result.interface';
 import { JobGroup } from '../entities/job-group.entity';
 import { SNSInfo } from '../entities/sns-info.entity';
 import { User } from '../entities/user.entity';
@@ -12,6 +11,7 @@ import { CreateSNSInfoDto } from './dto/create-sns-info.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateCareerYearDto } from './dto/update-career-year.dto';
 import { UpdateJobGroupDto } from './dto/update-job-group.dto';
+import { Result } from 'src/common/interceptors/transform.interceptor';
 
 @Injectable()
 export class UserService {
@@ -25,7 +25,7 @@ export class UserService {
     private readonly _jobGroupRepository: Repository<JobGroup>,
   ) {}
 
-  async findOneUser(id: string, type: SNSType): Promise<Result> {
+  async findOneUser(id: string, type: SNSType): Promise<Result<SNSInfo>> {
     try {
       const user = await this._snsInfoRepository.findOne({
         where: {
@@ -57,7 +57,7 @@ export class UserService {
     }
   }
 
-  async findOneSNSInfo(id: string, type: SNSType): Promise<Result> {
+  async findOneSNSInfo(id: string, type: SNSType): Promise<Result<SNSInfo>> {
     try {
       const result = await this._snsInfoRepository.findOne({
         where: {
@@ -91,7 +91,7 @@ export class UserService {
   async create(
     userData: CreateUserDto,
     snsInfoData: CreateSNSInfoDto,
-  ): Promise<Result> {
+  ): Promise<Result<null>> {
     const queryRunner = this.connection.createQueryRunner();
 
     // 실제 데이터베이스 연결
@@ -134,7 +134,7 @@ export class UserService {
     id: string,
     type: SNSType,
     data: CreateJobGroupDto,
-  ): Promise<Result> {
+  ): Promise<null> {
     const queryRunner = this.connection.createQueryRunner();
 
     await queryRunner.connect();
@@ -189,7 +189,7 @@ export class UserService {
     id: string,
     type: SNSType,
     data: CreateCareerYearDto,
-  ): Promise<Result> {
+  ): Promise<null> {
     try {
       const findUser = await this.findOneUser(id, type);
       const user: User = findUser.response.user;
@@ -204,10 +204,7 @@ export class UserService {
     }
   }
 
-  async modifyCareerYear(
-    user: User,
-    data: UpdateCareerYearDto,
-  ): Promise<User> {
+  async modifyCareerYear(user: User, data: UpdateCareerYearDto): Promise<User> {
     try {
       user.careerYear = data.year;
 

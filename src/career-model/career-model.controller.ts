@@ -10,9 +10,8 @@ import {
 } from '@nestjs/common';
 import { ResponseMessage } from '../common/decorators/response-message.decorator';
 import { CareerModel } from '../entities/career-model.entity';
-import { User } from '../entities/user.entity'
+import { User } from '../entities/user.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { Result } from '../common/result.interface';
 import { CareerModelService } from './career-model.service';
 import { CreateCareerModelDto } from './dto/create-career-model.dto';
 import { UpdateCareerModelDto } from './dto/update-career-model.dto';
@@ -25,10 +24,7 @@ export class CareerModelController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @ResponseMessage('커리어 모델 생성 성공')
-  async create(
-    @Req() req,
-    @Body() data: CreateCareerModelDto,
-  ): Promise<Result> {
+  async create(@Req() req, @Body() data: CreateCareerModelDto): Promise<null> {
     const { snsId, snsType } = req.user;
 
     if (data.type === 'PI') {

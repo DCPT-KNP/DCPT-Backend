@@ -1,5 +1,4 @@
-import { Controller, Get, HttpException, Query, Res } from '@nestjs/common';
-import { Response } from 'express';
+import { Controller, Get, HttpException, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SNSType } from '../common/custom-type';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
@@ -13,10 +12,7 @@ export class AuthController {
    */
   @Get('kakao')
   @ResponseMessage('카카오 로그인 성공')
-  async kakaoLogin(
-    @Query('code') code,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async kakaoLogin(@Query('code') code) {
     if (!code) {
       throw new HttpException('code query가 없습니다.', 400);
     }
@@ -42,10 +38,7 @@ export class AuthController {
 
   @Get('naver')
   @ResponseMessage('네이버 로그인 성공')
-  async naverLogin(
-    @Query('code') code,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async naverLogin(@Query('code') code) {
     if (!code) {
       throw new HttpException('code query가 없습니다.', 400);
     }
@@ -71,10 +64,7 @@ export class AuthController {
 
   @Get('google')
   @ResponseMessage('구글 로그인 성공')
-  async googleLogin(
-    @Query('code') code,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async googleLogin(@Query('code') code) {
     if (!code) {
       throw new HttpException('code query가 없습니다.', 400);
     }

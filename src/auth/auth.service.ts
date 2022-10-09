@@ -10,14 +10,11 @@ import {
   GOOGLE_CLIENT_ID,
   GOOGLE_SECRET,
   JWT_SECRET,
-  KAKAO_API_HOST,
   KAKAO_CLIENT_ID,
   KAKAO_REDIRECT_URI,
   NAVER_CLIENT_ID,
   NAVER_CLIENT_SECRET,
-  NAVER_HOST,
 } from '../common/config';
-import { Result } from '../common/result.interface';
 import * as CryptoJS from 'crypto-js';
 import Axios from 'axios';
 import qs from 'qs';
@@ -258,87 +255,87 @@ export class AuthService {
     }
   }
 
-  async kakaoLogout(accessToken: string): Promise<Result> {
-    const _url = KAKAO_API_HOST + '/v1/user/logout';
-    const _header = {
-      Authorization: `Bearer ${accessToken}`,
-    };
+  // async kakaoLogout(accessToken: string): Promise<Result> {
+  //   const _url = KAKAO_API_HOST + '/v1/user/logout';
+  //   const _header = {
+  //     Authorization: `Bearer ${accessToken}`,
+  //   };
 
-    try {
-      const result = await Axios.post(
-        _url,
-        { withCredentials: true },
-        { headers: _header },
-      );
+  //   try {
+  //     const result = await Axios.post(
+  //       _url,
+  //       { withCredentials: true },
+  //       { headers: _header },
+  //     );
 
-      return {
-        success: true,
-        message: '카카오 로그아웃 성공',
-        response: result.data,
-      };
-    } catch (e) {
-      return {
-        success: false,
-        message: '카카오 로그아웃 실패',
-        response: null,
-        error: e,
-      };
-    }
-  }
+  //     return {
+  //       success: true,
+  //       message: '카카오 로그아웃 성공',
+  //       response: result.data,
+  //     };
+  //   } catch (e) {
+  //     return {
+  //       success: false,
+  //       message: '카카오 로그아웃 실패',
+  //       response: null,
+  //       error: e,
+  //     };
+  //   }
+  // }
 
-  async kakaoUnlink(accessToken: string): Promise<Result> {
-    const _url = KAKAO_API_HOST + '/v1/user/unlink';
-    const _header = {
-      Authorization: `Bearer ${accessToken}`,
-    };
+  // async kakaoUnlink(accessToken: string): Promise<Result> {
+  //   const _url = KAKAO_API_HOST + '/v1/user/unlink';
+  //   const _header = {
+  //     Authorization: `Bearer ${accessToken}`,
+  //   };
 
-    try {
-      const result = await Axios.post(
-        _url,
-        { withCredentials: true },
-        { headers: _header },
-      );
+  //   try {
+  //     const result = await Axios.post(
+  //       _url,
+  //       { withCredentials: true },
+  //       { headers: _header },
+  //     );
 
-      return {
-        success: true,
-        message: '카카오 연결 해제 성공',
-        response: result.data,
-      };
-    } catch (e) {
-      return {
-        success: false,
-        message: '카카오 연결 해제 실패',
-        response: null,
-        error: e,
-      };
-    }
-  }
+  //     return {
+  //       success: true,
+  //       message: '카카오 연결 해제 성공',
+  //       response: result.data,
+  //     };
+  //   } catch (e) {
+  //     return {
+  //       success: false,
+  //       message: '카카오 연결 해제 실패',
+  //       response: null,
+  //       error: e,
+  //     };
+  //   }
+  // }
 
-  async naverLogout(accessToken: string): Promise<Result> {
-    const _url =
-      NAVER_HOST +
-      `/oauth2.0/token?` +
-      `grant_type=delete&` +
-      `client_id=${NAVER_CLIENT_ID}&` +
-      `client_secret=${NAVER_CLIENT_SECRET}&` +
-      `access_token=${accessToken}&` +
-      `service_provider=NAVER`;
+  // async naverLogout(accessToken: string): Promise<Result> {
+  //   const _url =
+  //     NAVER_HOST +
+  //     `/oauth2.0/token?` +
+  //     `grant_type=delete&` +
+  //     `client_id=${NAVER_CLIENT_ID}&` +
+  //     `client_secret=${NAVER_CLIENT_SECRET}&` +
+  //     `access_token=${accessToken}&` +
+  //     `service_provider=NAVER`;
 
-    try {
-      const result = await Axios.post(_url);
+  //   try {
+  //     const result = await Axios.post(_url);
 
-      return {
-        success: true,
-        message: '네이버 로그아웃 성공',
-        response: result.data,
-      };
-    } catch (e) {
-      return {
-        success: false,
-        message: '네이버 로그아웃 실패',
-        response: null,
-        error: e,
-      };
-    }
-  }
+  //     return {
+  //       success: true,
+  //       message: '네이버 로그아웃 성공',
+  //       response: result.data,
+  //     };
+  //   } catch (e) {
+  //     return {
+  //       success: false,
+  //       message: '네이버 로그아웃 실패',
+  //       response: null,
+  //       error: e,
+  //     };
+  //   }
+  // }
 }

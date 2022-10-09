@@ -5,9 +5,7 @@ import { AppModule } from 'src/app.module';
 
 export const getNestApp = async (): Promise<INestApplication> => {
   const module: TestingModule = await Test.createTestingModule({
-    imports: [
-      AppModule,
-    ],
+    imports: [AppModule],
   }).compile();
 
   const app: INestApplication = module.createNestApplication();
@@ -16,19 +14,23 @@ export const getNestApp = async (): Promise<INestApplication> => {
 };
 
 export const getResponseData = async (res): Promise<any> => {
-  const { body: { response } } = await res;
+  const {
+    body: { response },
+  } = await res;
 
   return response;
 };
 
 export const getResponseError = async (res): Promise<any> => {
-  const { body: { message, error } } = await res;
+  const {
+    body: { message, error },
+  } = await res;
 
   // const test = await res;
   // console.log(test.body);
 
   return {
     message,
-    error
+    error,
   };
 };

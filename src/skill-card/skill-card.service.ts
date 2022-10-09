@@ -1,8 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateSkillCardDto } from '../skill-card/dto/create-skill-card.dto';
 import { CardStatusType, DuplicateCard } from '../common/custom-type';
-import { Result } from '../common/result.interface';
 import { createSkill } from '../common/utils';
 import { SkillCard } from '../entities/skill-card.entity';
 import { User } from '../entities/user.entity';
@@ -24,7 +23,7 @@ export class SkillCardService {
     private readonly _missionRepository: Repository<Mission>,
   ) {}
 
-  async createSkillCard(user: User, data: CreateSkillCardDto): Promise<Result> {
+  async createSkillCard(user: User, data: CreateSkillCardDto): Promise<null> {
     const duplicateCardList: DuplicateCard[] = [];
     const queryRunner = this.connection.createQueryRunner();
 
@@ -70,26 +69,17 @@ export class SkillCardService {
 
       await queryRunner.commitTransaction();
 
-      return {
-        success: true,
-        message: '스킬 카드 생성 완료',
-        response: null,
-      };
+      return null;
     } catch (e) {
       await queryRunner.rollbackTransaction();
 
-      return {
-        success: false,
-        message: '스킬 카드 생성 실패',
-        response: null,
-        error: e,
-      };
+      throw new HttpException(e, 500);
     } finally {
       await queryRunner.release();
     }
   }
 
-  async getSkillCard(user: User): Promise<Result> {
+  async getSkillCard(user: User): Promise<any> {
     const entityManager = getManager();
 
     try {
@@ -180,25 +170,16 @@ export class SkillCardService {
         skillCards,
       };
 
-      return {
-        success: true,
-        message: '스킬 카드 조회 성공',
-        response: result,
-      };
+      return result;
     } catch (e) {
-      return {
-        success: false,
-        message: '스킬 카드 조회 실패',
-        response: null,
-        error: e,
-      };
+      throw new HttpException(e, 500);
     }
   }
 
   async modStatusSkillCard(
     uuid: string,
     status: CardStatusType,
-  ): Promise<Result> {
+  ): Promise<SkillCard> {
     try {
       const result = await this._skillCardRepository.findOne({
         where: {
@@ -210,22 +191,13 @@ export class SkillCardService {
 
       await this._skillCardRepository.save(result);
 
-      return {
-        success: true,
-        message: '스킬 카드 진행 상황 수정 완료',
-        response: result,
-      };
+      return result;
     } catch (e) {
-      return {
-        success: false,
-        message: '스킬 카드 진행 상황 수정 실패',
-        response: null,
-        error: e,
-      };
+      throw new HttpException(e, 500);
     }
   }
 
-  async addMission(uuid: string, title: string): Promise<Result> {
+  async addMission(uuid: string, title: string): Promise<null> {
     try {
       const skillCard = await this._skillCardRepository.findOne(uuid);
 
@@ -237,11 +209,7 @@ export class SkillCardService {
 
       await this._missionRepository.save(newMission);
 
-      return {
-        success: true,
-        message: '미션 생성 성공',
-        response: null,
-      };
+      return null;
     } catch (e) {
       switch (e) {
         case 'skillCard: undefined':
@@ -250,17 +218,12 @@ export class SkillCardService {
           );
 
         default:
-          return {
-            success: false,
-            message: '미션 생성 실패',
-            response: null,
-            error: e,
-          };
+          throw new HttpException(e, 500);
       }
     }
   }
 
-  async deleteMission(id: number): Promise<Result> {
+  async deleteMission(id: number): Promise<null> {
     try {
       const mission = await this._missionRepository.findOne(id);
 
@@ -270,32 +233,19 @@ export class SkillCardService {
 
       await this._missionRepository.delete(id);
 
-      return {
-        success: true,
-        message: '미션 삭제 성공',
-        response: null,
-      };
+      return null;
     } catch (e) {
       switch (e) {
         case 'mission: undefined':
           throw new BadRequestException('잘못된 id이거나 없는 id입니다.');
 
         default:
-          return {
-            success: false,
-            message: '미션 삭제 실패',
-            response: null,
-            error: e,
-          };
+          throw new HttpException(e, 500);
       }
     }
   }
 
-  async modMission(
-    id: number,
-    title?: string,
-    done?: boolean,
-  ): Promise<Result> {
+  async modMission(id: number, title?: string, done?: boolean): Promise<null> {
     try {
       const mission = await this._missionRepository.findOne(id);
 
@@ -308,28 +258,19 @@ export class SkillCardService {
 
       await this._missionRepository.save(mission);
 
-      return {
-        success: true,
-        message: '미션 수정 성공',
-        response: null,
-      };
+      return null;
     } catch (e) {
       switch (e) {
         case 'mission: undefined':
           throw new BadRequestException('잘못된 id이거나 없는 id입니다.');
 
         default:
-          return {
-            success: false,
-            message: '미션 수정 실패',
-            response: null,
-            error: e,
-          };
+          throw new HttpException(e, 500);
       }
     }
   }
 
-  async getMissionList(uuid: string): Promise<Result> {
+  async getMissionList(uuid: string): Promise<any> {
     const entityManager = getManager();
 
     try {
@@ -384,23 +325,14 @@ export class SkillCardService {
         missions,
       };
 
-      return {
-        success: true,
-        message: '미션 리스트 조회 성공',
-        response: result,
-      };
+      return result;
     } catch (e) {
       switch (e) {
         case 'uuid: error':
           throw new BadRequestException('잘못된 uuid입니다.');
 
         default:
-          return {
-            success: false,
-            message: '미션 리스트 조회 실패',
-            response: null,
-            error: e,
-          };
+          throw new HttpException(e, 500);
       }
     }
   }

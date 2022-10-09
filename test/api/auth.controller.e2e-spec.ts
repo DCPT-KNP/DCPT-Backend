@@ -15,7 +15,7 @@ describe('Auth Controller Test', () => {
         whitelist: true,
         forbidNonWhitelisted: true,
         transform: true,
-      })
+      }),
     );
 
     await app.init();
@@ -27,7 +27,7 @@ describe('Auth Controller Test', () => {
     it('인가코드 인증 성공 (200)', async () => {
       // given
       const query = {
-        code: process.env.KAKAO_TOKEN
+        code: process.env.KAKAO_TOKEN,
       };
 
       // when
@@ -49,7 +49,7 @@ describe('Auth Controller Test', () => {
       // Given
       const token = 'wrong token';
       const query = {
-        code: token
+        code: token,
       };
 
       // When

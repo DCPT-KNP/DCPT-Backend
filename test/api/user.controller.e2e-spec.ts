@@ -20,11 +20,11 @@ describe('User Controller Test', () => {
         whitelist: true,
         forbidNonWhitelisted: true,
         transform: true,
-      })
+      }),
     );
 
     await app.init();
-    
+
     req = request(app.getHttpServer());
   });
 
@@ -52,9 +52,7 @@ describe('User Controller Test', () => {
       // given
 
       // when
-      const response = req
-        .get(path)
-        .expect(400);
+      const response = req.get(path).expect(400);
 
       // then
       const { message, error } = await getResponseError(response);
@@ -70,10 +68,7 @@ describe('User Controller Test', () => {
       const wrongToken = `${accessToken}hi`;
 
       // when
-      const response = req
-        .get(path)
-        .set(headerKeyName, wrongToken)
-        .expect(401);
+      const response = req.get(path).set(headerKeyName, wrongToken).expect(401);
 
       // then
       const { message, error } = await getResponseError(response);
@@ -110,9 +105,7 @@ describe('User Controller Test', () => {
       // given
 
       // when
-      const response = req
-        .post(path)
-        .expect(400);
+      const response = req.post(path).expect(400);
 
       // then
       const { message, error } = await getResponseError(response);
@@ -126,7 +119,7 @@ describe('User Controller Test', () => {
     it('body 에러 (400)', async () => {
       // given
       const body = {
-        names: "error_job_list"
+        names: 'error_job_list',
       };
 
       // when
@@ -148,7 +141,7 @@ describe('User Controller Test', () => {
     it('직군 등록 성공 (201)', async () => {
       // given
       const body = {
-        names: ['job1', 'job2', 'job3']
+        names: ['job1', 'job2', 'job3'],
       };
 
       // when
@@ -183,13 +176,11 @@ describe('User Controller Test', () => {
       return response;
     });
 
-    it('헤더가 없음 (400)', async() => {
+    it('헤더가 없음 (400)', async () => {
       // given
-      
+
       // when
-      const response = req
-        .patch(path)
-        .expect(400);
+      const response = req.patch(path).expect(400);
 
       // then
       const { message, error } = await getResponseError(response);
@@ -204,7 +195,7 @@ describe('User Controller Test', () => {
       // given
       const body = {
         id: 100,
-        name: 'empty'
+        name: 'empty',
       };
 
       // when
@@ -227,7 +218,7 @@ describe('User Controller Test', () => {
       // given
       const body = {
         id: 1,
-        name: 'modified job'
+        name: 'modified job',
       };
 
       // when

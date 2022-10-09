@@ -15,7 +15,7 @@ describe('Career Model Controller Test', () => {
         whitelist: true,
         forbidNonWhitelisted: true,
         transform: true,
-      })
+      }),
     );
 
     await app.init();
@@ -28,9 +28,7 @@ describe('Career Model Controller Test', () => {
       // given
 
       // when
-      const response = request(app.getHttpServer())
-        .get(path)
-        .expect(200);
+      const response = request(app.getHttpServer()).get(path).expect(200);
 
       // then
       const result = await getResponseData(response);

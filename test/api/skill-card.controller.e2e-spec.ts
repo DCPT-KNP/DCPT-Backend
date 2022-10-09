@@ -14,13 +14,13 @@ describe('Skill Card Controller Test', () => {
         whitelist: true,
         forbidNonWhitelisted: true,
         transform: true,
-      })
+      }),
     );
 
     await app.init();
   });
 
   it('dummy', () => {
-    expect(2+2).toEqual(4);
+    expect(2 + 2).toEqual(4);
   });
 });

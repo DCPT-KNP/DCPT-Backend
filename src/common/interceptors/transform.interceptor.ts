@@ -13,6 +13,7 @@ export interface Result<T> {
   success: boolean;
   message: string;
   response: T;
+  error?: any;
 }
 
 @Injectable()

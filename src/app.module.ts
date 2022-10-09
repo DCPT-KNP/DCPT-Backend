@@ -33,7 +33,7 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
        * 따라서 prod에서는 migration해준다.
        */
       synchronize: process.env.NODE_ENV !== 'prod',
-      logging:process.env.NODE_ENV === 'dev' ? ['query'] : [],
+      logging: process.env.NODE_ENV === 'dev' ? ['query'] : [],
       keepConnectionAlive: true,
     }),
     AuthModule,
@@ -45,9 +45,9 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
   providers: [
     {
       provide: APP_INTERCEPTOR,
-      useClass: TransformInterceptor
-    }
-  ]
+      useClass: TransformInterceptor,
+    },
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

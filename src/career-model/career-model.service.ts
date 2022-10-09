@@ -1,7 +1,6 @@
 import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SkillInfo, SkillType, SNSType } from '../common/custom-type';
-import { Result } from '../common/result.interface';
 import { CareerModel } from '../entities/career-model.entity';
 import { OtherCategory } from '../entities/other-category.entity';
 import { User } from '../entities/user.entity';
@@ -26,7 +25,7 @@ export class CareerModelService {
     snsId: string,
     snsType: SNSType,
     data: CreateCareerModelDto,
-  ): Promise<Result> {
+  ): Promise<null> {
     const queryRunner = this.connection.createQueryRunner();
 
     await queryRunner.connect();
