@@ -1,7 +1,6 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SNSType } from '../common/custom-type';
-import { Result } from '../common/result.interface';
 import { JobGroup } from '../entities/job-group.entity';
 import { SNSInfo } from '../entities/sns-info.entity';
 import { User } from '../entities/user.entity';
@@ -12,6 +11,7 @@ import { CreateSNSInfoDto } from './dto/create-sns-info.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateCareerYearDto } from './dto/update-career-year.dto';
 import { UpdateJobGroupDto } from './dto/update-job-group.dto';
+import { Result } from 'src/common/interceptors/transform.interceptor';
 
 @Injectable()
 export class UserService {
@@ -25,7 +25,7 @@ export class UserService {
     private readonly _jobGroupRepository: Repository<JobGroup>,
   ) {}
 
-  async findOneUser(id: string, type: SNSType): Promise<Result> {
+  async findOneUser(id: string, type: SNSType): Promise<Result<SNSInfo>> {
     try {
       const user = await this._snsInfoRepository.findOne({
         where: {
@@ -57,7 +57,7 @@ export class UserService {
     }
   }
 
-  async findOneSNSInfo(id: string, type: SNSType): Promise<Result> {
+  async findOneSNSInfo(id: string, type: SNSType): Promise<Result<SNSInfo>> {
     try {
       const result = await this._snsInfoRepository.findOne({
         where: {
@@ -91,7 +91,7 @@ export class UserService {
   async create(
     userData: CreateUserDto,
     snsInfoData: CreateSNSInfoDto,
-  ): Promise<Result> {
+  ): Promise<Result<null>> {
     const queryRunner = this.connection.createQueryRunner();
 
     // 실제 데이터베이스 연결
@@ -134,7 +134,7 @@ export class UserService {
     id: string,
     type: SNSType,
     data: CreateJobGroupDto,
-  ): Promise<Result> {
+  ): Promise<null> {
     const queryRunner = this.connection.createQueryRunner();
 
     await queryRunner.connect();
@@ -151,26 +151,17 @@ export class UserService {
 
       await queryRunner.commitTransaction();
 
-      return {
-        success: true,
-        message: '직군 생성 성공',
-        response: null,
-      };
+      return null;
     } catch (e) {
       await queryRunner.rollbackTransaction();
 
-      return {
-        success: false,
-        message: '직군 생성 실패',
-        response: null,
-        error: e,
-      };
+      throw new HttpException(e, 500);
     } finally {
       await queryRunner.release();
     }
   }
 
-  async modifyJobGroup(data: UpdateJobGroupDto): Promise<Result> {
+  async modifyJobGroup(data: UpdateJobGroupDto): Promise<JobGroup> {
     try {
       const result = await this._jobGroupRepository.findOne(data.id);
 
@@ -182,23 +173,14 @@ export class UserService {
 
       await this._jobGroupRepository.save(result);
 
-      return {
-        success: true,
-        message: '직군 수정 성공',
-        response: result,
-      };
+      return result;
     } catch (e) {
       switch (e) {
         case 'result is undefined':
           throw new BadRequestException('해당하는 id가 존재하지 않습니다.');
 
         default:
-          return {
-            success: false,
-            message: '직군 수정 실패',
-            response: null,
-            error: e,
-          };
+          throw new HttpException(e, 500);
       }
     }
   }
@@ -207,7 +189,7 @@ export class UserService {
     id: string,
     type: SNSType,
     data: CreateCareerYearDto,
-  ): Promise<Result> {
+  ): Promise<null> {
     try {
       const findUser = await this.findOneUser(id, type);
       const user: User = findUser.response.user;
@@ -216,46 +198,25 @@ export class UserService {
 
       await this._userRepository.save(user);
 
-      return {
-        success: true,
-        message: '연차 등록 성공',
-        response: null,
-      };
+      return null;
     } catch (e) {
-      return {
-        success: false,
-        message: '연차 등록 실패',
-        response: null,
-        error: e,
-      };
+      throw new HttpException(e, 500);
     }
   }
 
-  async modifyCareerYear(
-    user: User,
-    data: UpdateCareerYearDto,
-  ): Promise<Result> {
+  async modifyCareerYear(user: User, data: UpdateCareerYearDto): Promise<User> {
     try {
       user.careerYear = data.year;
 
       await this._userRepository.save(user);
 
-      return {
-        success: true,
-        message: '연차 수정 성공',
-        response: user,
-      };
+      return user;
     } catch (e) {
-      return {
-        success: false,
-        message: '연차 수정 실패',
-        response: null,
-        error: e,
-      };
+      throw new HttpException(e, 500);
     }
   }
 
-  async getAllUserInfo(user: User): Promise<Result> {
+  async getAllUserInfo(user: User): Promise<User> {
     try {
       const result = await this._userRepository.findOne({
         select: ['id', 'email', 'nickname', 'image', 'careerYear', 'jobGroups'],
@@ -265,18 +226,9 @@ export class UserService {
         relations: ['jobGroups'],
       });
 
-      return {
-        success: true,
-        message: '유저 정보 조회 성공',
-        response: result,
-      };
+      return result;
     } catch (e) {
-      return {
-        success: false,
-        message: '유저 정보 조회 실패',
-        response: null,
-        error: e,
-      };
+      throw new HttpException(e, 500);
     }
   }
 }

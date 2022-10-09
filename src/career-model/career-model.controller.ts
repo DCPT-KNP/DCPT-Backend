@@ -8,11 +8,14 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ResponseMessage } from '../common/decorators/response-message.decorator';
+import { CareerModel } from '../entities/career-model.entity';
+import { User } from '../entities/user.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { Result } from '../common/result.interface';
 import { CareerModelService } from './career-model.service';
 import { CreateCareerModelDto } from './dto/create-career-model.dto';
 import { UpdateCareerModelDto } from './dto/update-career-model.dto';
+import { SkillInfo } from '../common/custom-type';
 
 @Controller('career-model')
 export class CareerModelController {
@@ -20,10 +23,8 @@ export class CareerModelController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(
-    @Req() req,
-    @Body() data: CreateCareerModelDto,
-  ): Promise<Result> {
+  @ResponseMessage('커리어 모델 생성 성공')
+  async create(@Req() req, @Body() data: CreateCareerModelDto): Promise<null> {
     const { snsId, snsType } = req.user;
 
     if (data.type === 'PI') {
@@ -48,9 +49,9 @@ export class CareerModelController {
     }
 
     if (data.type === 'T' || data.type === 'PI') {
-      if (!(1 <= data.otherTag.length && data.otherTag.length <= 5)) {
+      if (!(1 <= data.otherTag.length)) {
         throw new BadRequestException(
-          'T, PI모델의 기타 역량은 1~5개 선택해야 합니다.',
+          'T, PI모델의 기타 역량은 1개 이상 선택해야 합니다.',
         );
       }
     }
@@ -68,7 +69,8 @@ export class CareerModelController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getCareerModel(@Req() req) {
+  @ResponseMessage('커리어 모델 조회 성공')
+  async getCareerModel(@Req() req): Promise<User> {
     const { user } = req.user;
 
     return await this._careerModelService.getCareerModel(user);
@@ -76,14 +78,16 @@ export class CareerModelController {
 
   @UseGuards(JwtAuthGuard)
   @Patch()
+  @ResponseMessage('로드맵 제목 수정 성공')
   async modifyRoadmapTitle(
     @Body() data: UpdateCareerModelDto,
-  ): Promise<Result> {
+  ): Promise<CareerModel> {
     return await this._careerModelService.modifyRoadmapTitle(data);
   }
 
   @Get('skill')
-  async getSkillInfo() {
+  @ResponseMessage('스킬 조회 성공')
+  getSkillInfo(): SkillInfo[] {
     return this._careerModelService.getSkillInfo();
   }
 }

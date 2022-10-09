@@ -8,6 +8,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ResponseMessage } from '../common/decorators/response-message.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateCareerYearDto } from './dto/create-career-year.dto';
 import { CreateJobGroupDto } from './dto/create-job-group.dto';
@@ -21,6 +22,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Post('job')
+  @ResponseMessage('직군 생성 성공')
   async createJobGroup(@Req() req, @Body() data: CreateJobGroupDto) {
     const { snsId, snsType } = await req.user;
 
@@ -33,12 +35,14 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('job')
+  @ResponseMessage('직군 수정 성공')
   async modifyJobGroup(@Body() data: UpdateJobGroupDto) {
     return await this._userService.modifyJobGroup(data);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('career-year')
+  @ResponseMessage('연차 등록 성공')
   async addCareerYear(@Req() req, @Body() data: CreateCareerYearDto) {
     const { snsId, snsType } = req.user;
     return await this._userService.addCareerYear(snsId, snsType, data);
@@ -46,6 +50,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('career-year')
+  @ResponseMessage('연차 수정 성공')
   async modifyCareerYear(@Req() req, @Body() data: UpdateCareerYearDto) {
     const { user } = req.user;
 
@@ -54,6 +59,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
+  @ResponseMessage('유저 정보 조회 성공')
   async getAllUserInfo(@Req() req) {
     const { user } = req.user;
 

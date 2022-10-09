@@ -1,7 +1,7 @@
-import { Controller, Get, HttpException, Query, Res } from '@nestjs/common';
-import { Response } from 'express';
+import { Controller, Get, HttpException, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SNSType } from '../common/custom-type';
+import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -11,10 +11,8 @@ export class AuthController {
    * kakao strategy
    */
   @Get('kakao')
-  async kakaoLogin(
-    @Query('code') code,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  @ResponseMessage('카카오 로그인 성공')
+  async kakaoLogin(@Query('code') code) {
     if (!code) {
       throw new HttpException('code query가 없습니다.', 400);
     }
@@ -30,24 +28,8 @@ export class AuthController {
       id,
       SNSType.KAKAO,
     );
-    const refreshToken = await this._authService.createRefreshToken(
-      email,
-      nickname,
-    );
 
-    // res.cookie('resfreshToken', refreshToken, {
-    //   maxAge: 1000 * 60 * 60 * 24 * 14,
-    //   sameSite: 'none',
-    //   httpOnly: true,
-    // });
-
-    return {
-      success: true,
-      message: '카카오 로그인 성공',
-      response: {
-        accessToken,
-      },
-    };
+    return accessToken;
   }
 
   /**
@@ -55,10 +37,8 @@ export class AuthController {
    */
 
   @Get('naver')
-  async naverLogin(
-    @Query('code') code,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  @ResponseMessage('네이버 로그인 성공')
+  async naverLogin(@Query('code') code) {
     if (!code) {
       throw new HttpException('code query가 없습니다.', 400);
     }
@@ -74,24 +54,8 @@ export class AuthController {
       id,
       SNSType.NAVER,
     );
-    const refreshToken = await this._authService.createRefreshToken(
-      email,
-      nickname,
-    );
 
-    // res.cookie('resfreshToken', refreshToken, {
-    //   maxAge: 1000 * 60 * 60 * 24 * 14,
-    //   sameSite: 'none',
-    //   httpOnly: true,
-    // });
-
-    return {
-      success: true,
-      message: '네이버 로그인 성공',
-      response: {
-        accessToken,
-      },
-    };
+    return accessToken;
   }
 
   /**
@@ -99,10 +63,8 @@ export class AuthController {
    */
 
   @Get('google')
-  async googleLogin(
-    @Query('code') code,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  @ResponseMessage('구글 로그인 성공')
+  async googleLogin(@Query('code') code) {
     if (!code) {
       throw new HttpException('code query가 없습니다.', 400);
     }
@@ -118,23 +80,7 @@ export class AuthController {
       id,
       SNSType.GOOGLE,
     );
-    const refreshToken = await this._authService.createRefreshToken(
-      email,
-      nickname,
-    );
 
-    // res.cookie('resfreshToken', refreshToken, {
-    //   maxAge: 1000 * 60 * 60 * 24 * 14,
-    //   sameSite: 'none',
-    //   httpOnly: true,
-    // });
-
-    return {
-      success: true,
-      message: '구글 로그인 성공',
-      response: {
-        accessToken,
-      },
-    };
+    return accessToken;
   }
 }
